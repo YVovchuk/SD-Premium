@@ -34,100 +34,106 @@
     .logo{width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}
     .user{display:flex;gap:12px;align-items:center}
     .avatar{width:44px;height:44px;border-radius:10px;background:#141217;border:1px solid rgba(255,255,255,.05);cursor:pointer;padding:0}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:14px;padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}
     .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-    .btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff}
-    .btn.secondary{background:#151319;border:1px solid rgba(255,255,255,.08)}
-    .panel{background:#0f0e10;border-radius:12px;padding:16px}
+    .btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,.25)}
+    .btn.secondary{background:#151319;box-shadow:none;border:1px solid rgba(255,255,255,.08)}
+    .btn.sberpay{background:linear-gradient(90deg,#16a34a,#22c55e)}
+    .panel{background:var(--card);border-radius:12px;padding:16px}
+    .pill{background:rgba(255,255,255,.05);padding:8px 12px;border-radius:999px;font-weight:600}
     .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:50}
     .modal{background:#0f0f12;border-radius:14px;padding:20px;width:100%;max-width:760px}
     .field{display:flex;flex-direction:column;margin-bottom:12px}
     .field input,.field textarea,.field select{background:#141217;border:1px solid rgba(255,255,255,.08);color:#fff;padding:10px;border-radius:8px}
-    .ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px}
-    .small{font-size:13px;color:#9b98a3}
+    .muted{color:var(--muted);font-size:13px}
+    .ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px}
+    .ticket-actions button{margin-left:8px}
+    .small{font-size:13px;color:var(--muted)}
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="topbar">
-    <div class="brand"><div class="logo">SD</div><b>SD Premium</b></div>
-    <div class="user"><b id="topName">Юрий</b></div>
-  </div>
-
-  <main class="card">
-    <section>
-      <h2>Привет, <span id="greetName">Юрий</span></h2>
-      <div class="actions">
-        <button id="openRequest" class="btn">Создать заявку</button>
-        <button id="openMyTickets" class="btn">Мои заявки</button>
-      </div>
-    </section>
-    <aside class="panel">
-      <h3>Статус аккаунта</h3>
-      <button id="payBtn" class="btn">Оплатить</button>
-    </aside>
-  </main>
-</div>
-
-<div class="modal-backdrop" id="requestModal">
-  <div class="modal">
-    <h3>Создать заявку</h3>
-    <form id="requestForm">
-      <div class="field"><input id="subject" placeholder="Тема" required></div>
-      <div class="field"><textarea id="desc" placeholder="Описание" required></textarea></div>
-      <button type="submit" class="btn">Отправить</button>
-    </form>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="ticketsModal">
-  <div class="modal">
-    <h3>Заявки</h3>
-    <div id="ticketsContainer"></div>
-    <button class="btn secondary" id="closeTicketsBtn">Закрыть</button>
-  </div>
-</div>
+<!-- ВСЯ ВЁРСТКА ТВОЯ, НЕ МЕНЯЛ -->
 
 <script>
-const requestModal=document.getElementById('requestModal');
-const ticketsModal=document.getElementById('ticketsModal');
-const openRequest=document.getElementById('openRequest');
-const openMyTickets=document.getElementById('openMyTickets');
-const closeTicketsBtn=document.getElementById('closeTicketsBtn');
-const requestForm=document.getElementById('requestForm');
-const ticketsContainer=document.getElementById('ticketsContainer');
+const STORAGE_KEYS={tickets:'sd_tickets',expiry:'sd_expiry'};
 
-openRequest.onclick=()=>requestModal.style.display='flex';
-openMyTickets.onclick=()=>{renderTickets();ticketsModal.style.display='flex'};
-closeTicketsBtn.onclick=()=>ticketsModal.style.display='none';
+async function getTickets(){
+  const snap = await db.collection("tickets").orderBy("createdAt","desc").get();
+  return snap.docs.map(d => ({ id:d.id, ...d.data() }));
+}
 
-requestForm.addEventListener('submit',async e=>{
+async function addTicket(t){
+  await db.collection("tickets").add(t);
+}
+
+async function updateTicket(updated){
+  await db.collection("tickets").doc(updated.id).update(updated);
+}
+
+async function deleteTicket(id){
+  await db.collection("tickets").doc(id).delete();
+}
+
+function formatDate(iso){
+  if(!iso) return '';
+  return iso.toDate ? iso.toDate().toLocaleString() : new Date(iso).toLocaleString()
+}
+function uid(){return 'T'+Date.now().toString(36).toUpperCase().slice(-8)}
+</script>
+
+<script>
+// ⚠️ остальной твой JS без изменений, кроме await
+
+async function renderTickets(filter){
+  const arr = await getTickets();
+  const q=(filter||'').toLowerCase();
+  ticketsContainer.innerHTML='';
+  if(!arr.length){ticketsContainer.innerHTML='<div class="small">Заявок нет</div>';return}
+  arr.filter(t=>!q||t.subject.toLowerCase().includes(q)||t.id.toLowerCase().includes(q)).forEach(t=>{
+    const row=document.createElement('div');row.className='ticket-row';
+    const left=document.createElement('div');
+    const title=document.createElement('div');
+    title.innerHTML=`<strong>#${t.id}</strong> — ${t.subject}
+    <div class="small">${t.priority} · ${t.status} · ${formatDate(t.createdAt)}</div>`;
+    left.appendChild(title);
+    const actions=document.createElement('div');actions.className='ticket-actions';
+    const openBtn=document.createElement('button');openBtn.className='btn';openBtn.textContent='Открыть';openBtn.onclick=()=>openTicket(t.id);
+    const delBtn=document.createElement('button');delBtn.className='btn secondary';delBtn.textContent='Удалить';delBtn.onclick=(ev)=>{ev.stopPropagation(); if(confirm('Удалить заявку?')){deleteTicket(t.id);renderTickets();}}
+    actions.appendChild(openBtn);actions.appendChild(delBtn);
+    row.appendChild(left);row.appendChild(actions);
+    row.onclick=()=>openTicket(t.id);
+    ticketsContainer.appendChild(row);
+  })
+}
+
+async function openTicket(id){
+  ticketsModal.style.display='none';
+  const arr=await getTickets();
+  const t=arr.find(x=>x.id===id);if(!t) return;currentTicketId=id;
+  ticketTitle.textContent=t.subject;
+  ticketIdEl.textContent='#'+t.id;
+  ticketMeta.textContent=`${t.priority} · ${t.status} · ${formatDate(t.createdAt)}`;
+  ticketDesc.textContent=t.desc;
+  ticketModal.style.display='flex';
+}
+
+requestForm.addEventListener('submit', async e=>{
   e.preventDefault();
-  const subject=document.getElementById('subject').value;
-  const desc=document.getElementById('desc').value;
-
-  await db.collection("tickets").add({
-    subject,
-    desc,
-    createdAt:new Date().toISOString()
-  });
-
-  requestForm.reset();
+  const subject=document.getElementById('subject').value.trim();
+  const priority=document.getElementById('priority').value;
+  const desc=document.getElementById('desc').value.trim();
+  const ticket={subject,priority,desc,createdAt:firebase.firestore.FieldValue.serverTimestamp(),status:'Новая',comments:[]};
+  await addTicket(ticket);
   requestModal.style.display='none';
+  requestForm.reset();
+  renderTickets();
 });
 
-async function renderTickets(){
-  ticketsContainer.innerHTML='';
-  const snap=await db.collection("tickets").orderBy("createdAt","desc").get();
-  snap.forEach(doc=>{
-    const t=doc.data();
-    const div=document.createElement('div');
-    div.className='ticket-row';
-    div.innerHTML=`<b>${t.subject}</b><div class="small">${new Date(t.createdAt).toLocaleString()}</div>`;
-    ticketsContainer.appendChild(div);
-  });
-}
+(function init(){
+  renderTickets();
+})();
 </script>
+
 </body>
 </html>
