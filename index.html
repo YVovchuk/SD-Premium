@@ -18,7 +18,8 @@
       projectId: "sd-premium-b3b78",
       storageBucket: "sd-premium-b3b78.firebasestorage.app",
       messagingSenderId: "475471999638",
-      appId: "1:475471999638:web:360d369103612e96f6c8b7"
+      appId: "1:475471999638:web:360d369103612e96f6c8b7",
+      measurementId: "G-DB20YYY5BN"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -34,59 +35,282 @@
     .logo{width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}
     .user{display:flex;gap:12px;align-items:center}
     .avatar{width:44px;height:44px;border-radius:10px;background:#141217;border:1px solid rgba(255,255,255,.05);cursor:pointer;padding:0}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:14px;padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}
     .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-    .btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff}
-    .btn.secondary{background:#151319;border:1px solid rgba(255,255,255,.08)}
-    .panel{background:#0f0e10;border-radius:12px;padding:16px}
+    .btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,.25)}
+    .btn.secondary{background:#151319;box-shadow:none;border:1px solid rgba(255,255,255,.08)}
+    .btn.sberpay{background:linear-gradient(90deg,#16a34a,#22c55e)}
+    .panel{background:var(--card);border-radius:12px;padding:16px}
+    .pill{background:rgba(255,255,255,.05);padding:8px 12px;border-radius:999px;font-weight:600}
     .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:50}
     .modal{background:#0f0f12;border-radius:14px;padding:20px;width:100%;max-width:760px}
     .field{display:flex;flex-direction:column;margin-bottom:12px}
     .field input,.field textarea,.field select{background:#141217;border:1px solid rgba(255,255,255,.08);color:#fff;padding:10px;border-radius:8px}
-    .ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px}
-    .small{font-size:13px;color:#9b98a3}
+    .muted{color:var(--muted);font-size:13px}
+    .ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px}
+    .ticket-actions button{margin-left:8px}
+    .small{font-size:13px;color:var(--muted)}
+    /* toast */
+    .toast-wrap{position:fixed;top:18px;right:18px;z-index:1000;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#111216;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.04);box-shadow:0 8px 30px rgba(0,0,0,.6);color:#fff;min-width:180px}
+    .toast.success{border-left:4px solid #22c55e}
+    /* confetti */
+    .confetti{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:999}
+    .confetti span{position:absolute;font-size:20px;animation:confetti 1200ms linear forwards}
+    @keyframes confetti{from{transform:translateY(0) rotate(0) scale(1);opacity:1}to{transform:translateY(260px) rotate(520deg) scale(.8);opacity:0}}
   </style>
 </head>
 <body>
+<div class="container">
+  <div class="topbar">
+    <div class="brand"><div class="logo">SD</div><div><b>SD Premium</b><div style="font-size:12px;color:var(--muted)">Личный кабинет</div></div></div>
+    <div class="user">
+      <div><b id="topName">Юрий</b><div style="font-size:12px;color:var(--muted)">Премиум</div></div>
+      <button id="avatarBtn" class="avatar"><img id="avatarImg" style="width:44px;height:44px;border-radius:10px;object-fit:cover;" /></button>
+    </div>
+  </div>
 
-<!-- ⚠️ ВЕСЬ ТВОЙ HTML И МОДАЛКИ — БЕЗ ИЗМЕНЕНИЙ -->
-<!-- (я их не удалял и не трогал, см. твою версию) -->
+<!-- Profile Modal -->
+<div class="modal-backdrop" id="profileModal"><div class="modal">
+  <h3>Настройки профиля</h3>
+  <div class="field"><label>Имя</label><input id="profileName" /></div>
+  <div class="field"><label>Аватар</label><input type="file" id="profileAvatar" accept="image/*" /></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn secondary" id="closeProfileBtn">Закрыть</button>
+    <button class="btn" id="saveProfileBtn">Сохранить</button>
+  </div>
+</div></div>
+
+  <main class="card">
+    <section>
+      <h2>Привет, <span id="greetName">Юрий</span></h2>
+      <p class="muted">Добро пожаловать в SD Premium — поможем быстро и просто.</p>
+      <div class="actions">
+        <button id="openRequest" class="btn">Создать заявку</button>
+        <button id="openMyTickets" class="btn">Мои заявки</button>
+        <button id="openInstr" class="btn secondary">Инструкция</button>
+      </div>
+    </section>
+    <aside class="panel">
+      <h3>Статус аккаунта</h3>
+      <div style="display:flex;gap:10px;align-items:center"><div class="pill">Премиум</div><div class="pill">Активно: до <span id="expiryDate">02.03.2026</span></div></div>
+      <button id="payBtn" class="btn" style="margin-top:12px">Оплатить</button>
+      <div id="instrPanel" style="display:none;margin-top:12px">
+        <strong>Инструкция</strong>
+        <ol style="padding-left:18px;margin:8px 0 0 0;line-height:1.6;" class="muted">
+          <li>Вход в панель — через вашу почту и пароль.</li>
+          <li>Создание заявки — укажите тему и описание, мы ответим в течение часа.</li>
+          <li>Для приоритетных вопросов отметьте "Высокий".</li>
+        </ol>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<!-- Request Modal -->
+<div class="modal-backdrop" id="requestModal"><div class="modal">
+  <h3>Создать заявку</h3>
+  <form id="requestForm">
+    <div class="field"><label>Тема</label><input id="subject" required></div>
+    <div class="field"><label>Приоритет</label><select id="priority"><option>Нормальный</option><option>Высокий</option><option>Критический</option></select></div>
+    <div class="field"><label>Описание</label><textarea id="desc" required></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn secondary" id="requestCancel">Отмена</button><button type="submit" class="btn">Отправить</button></div>
+  </form>
+</div></div>
+
+<!-- Ticket Detail Modal -->
+<div class="modal-backdrop" id="ticketModal"><div class="modal">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 id="ticketTitle">Заявка</h3><div class="small" id="ticketId">#0</div></div>
+  <div class="small" id="ticketMeta"></div>
+  <div style="margin-top:12px"><strong>Описание</strong><div id="ticketDesc" style="margin-top:6px;white-space:pre-wrap"></div></div>
+  <div style="margin-top:12px"><strong>Комментарии</strong><div id="ticketComments" style="margin-top:6px"></div></div>
+  <div style="margin-top:12px" class="field"><label>Добавить уточнение</label><textarea id="newComment"></textarea></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+    <button id="addCommentBtn" class="btn">Добавить уточнение</button>
+    <button id="cancelTicketBtn" class="btn secondary">Отменить заявку</button>
+    <button id="deleteTicketBtn" class="btn secondary">Удалить заявку</button>
+    <button id="closeTicketModal" class="btn secondary">Закрыть окно</button>
+  </div>
+</div></div>
+
+<!-- My Tickets Modal -->
+<div class="modal-backdrop" id="ticketsModal"><div class="modal">
+  <h3>Мои заявки</h3>
+  <div style="margin-bottom:10px"><input id="ticketSearch" placeholder="Поиск по теме или ID" style="width:100%;padding:8px;border-radius:8px;background:#141217;border:1px solid rgba(255,255,255,.06);color:#fff"/></div>
+  <div id="ticketsContainer" style="max-height:360px;overflow:auto"></div>
+  <div style="text-align:right;margin-top:12px"><button class="btn secondary" id="closeTicketsBtn">Закрыть</button></div>
+</div></div>
+
+<!-- Payment Modal -->
+<div class="modal-backdrop" id="paymentModal"><div class="modal">
+  <h3>Оплата</h3>
+  <div class="muted">Оплата доступна по нескольким способам — <strong id="priceLabel">499 ₽/мес</strong></div>
+  <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+    <button id="payCardBtn" class="btn">Оплатить картой</button>
+    <button id="sberpayBtn" class="btn sberpay">SberPay</button>
+    <button id="sbpBtn" class="btn secondary">СБП</button>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+    <label class="small">Период</label>
+    <select id="periodSelect" style="background:#141217;border:1px solid rgba(255,255,255,.06);padding:8px;border-radius:8px;color:#fff">
+      <option value="1">1 месяц</option>
+      <option value="3">3 месяца</option>
+      <option value="6">6 месяцев</option>
+      <option value="12">12 месяцев</option>
+    </select>
+    <div style="margin-left:auto;text-align:right">
+      <div class="small">Сумма: <strong id="totalAmount">499 ₽</strong></div>
+      <div class="small">Следующее списание: <span id="nextBilling">—</span></div>
+      <div class="small" id="discountLabel"></div>
+    </div>
+  </div>
+
+  <div id="cardForm" style="display:none;margin-top:12px">
+    <form id="cardPaymentForm">
+      <div class="field"><label>Имя на карте</label><input id="cardName" name="cardName" placeholder="IVAN IVANOV" required></div>
+      <div class="field"><label>Номер карты</label><input id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required></div>
+      <div style="display:flex;gap:8px">
+        <div class="field" style="flex:1"><label>Срок</label><input id="cardExp" name="cardExp" placeholder="MM/YY" required></div>
+        <div class="field" style="width:120px"><label>CVC</label><input id="cardCvc" name="cardCvc" placeholder="123" maxlength="4" required></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+        <button type="button" class="btn secondary" id="cancelCardPayment">Отмена</button>
+        <button type="submit" class="btn">Оплатить</button>
+      </div>
+    </form>
+  </div>
+
+  <div style="text-align:right;margin-top:14px"><button class="btn secondary" onclick="paymentModal.style.display='none'">Закрыть</button></div>
+</div></div>
+
+<!-- toast + confetti -->
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="confetti" id="confetti"></div>
 
 <script>
-/* ==== FIRESTORE ВМЕСТО localStorage ДЛЯ ЗАЯВОК ==== */
+const requestModal=document.getElementById('requestModal');
+const profileModal=document.getElementById('profileModal');
+const avatarBtn=document.getElementById('avatarBtn');
+const avatarImg=document.getElementById('avatarImg');
+const topName=document.getElementById('topName');
+const greetName=document.getElementById('greetName');
+const profileName=document.getElementById('profileName');
+const profileAvatar=document.getElementById('profileAvatar');
+const closeProfileBtn=document.getElementById('closeProfileBtn');
+const saveProfileBtn=document.getElementById('saveProfileBtn');
+const ticketModal=document.getElementById('ticketModal');
+const ticketsModal=document.getElementById('ticketsModal');
+const paymentModal=document.getElementById('paymentModal');
+const openRequest=document.getElementById('openRequest');
+const openMyTickets=document.getElementById('openMyTickets');
+const openInstr=document.getElementById('openInstr');
+const instrPanel=document.getElementById('instrPanel');
+const payBtn=document.getElementById('payBtn');
+const ticketsContainer=document.getElementById('ticketsContainer');
+const expiryDateEl=document.getElementById('expiryDate');
+const sberpayBtn=document.getElementById('sberpayBtn');
+const sbpBtn=document.getElementById('sbpBtn');
+const payCardBtn=document.getElementById('payCardBtn');
+const requestForm=document.getElementById('requestForm');
+const requestCancel=document.getElementById('requestCancel');
+const cardForm=document.getElementById('cardForm');
+const cardPaymentForm=document.getElementById('cardPaymentForm');
+const cancelCardPayment=document.getElementById('cancelCardPayment');
+const periodSelect=document.getElementById('periodSelect');
+const totalAmount=document.getElementById('totalAmount');
+const nextBilling=document.getElementById('nextBilling');
+const discountLabel=document.getElementById('discountLabel');
+const toastWrap=document.getElementById('toastWrap');
+const confettiWrap=document.getElementById('confetti');
 
+const ticketTitle=document.getElementById('ticketTitle');
+const ticketIdEl=document.getElementById('ticketId');
+const ticketMeta=document.getElementById('ticketMeta');
+const ticketDesc=document.getElementById('ticketDesc');
+const ticketComments=document.getElementById('ticketComments');
+const newComment=document.getElementById('newComment');
+const addCommentBtn=document.getElementById('addCommentBtn');
+const cancelTicketBtn=document.getElementById('cancelTicketBtn');
+const deleteTicketBtn=document.getElementById('deleteTicketBtn');
+const closeTicketModal=document.getElementById('closeTicketModal');
+const ticketSearch=document.getElementById('ticketSearch');
+const closeTicketsBtn=document.getElementById('closeTicketsBtn');
+
+const STORAGE_KEYS={tickets:'sd_tickets',expiry:'sd_expiry'};
+const BASE_PRICE=499; // ₽ per month
+const DISCOUNTS={3:0.05,6:0.10,12:0.20};
+</script>
+
+<!-- Firestore replacement функций (аккуратно, только хранилище) -->
+<script>
 async function getTickets(){
   const snap = await db.collection("tickets").orderBy("createdAt","desc").get();
   return snap.docs.map(d => ({ id:d.id, ...d.data() }));
 }
 
-async function addTicket(t){
+async function addTicketToDB(t){
   await db.collection("tickets").add(t);
 }
 
-async function updateTicket(updated){
-  await db.collection("tickets").doc(updated.id).update(updated);
+async function updateTicketInDB(updated){
+  const { id, ...data } = updated;
+  await db.collection("tickets").doc(id).update(data);
 }
 
-async function deleteTicket(id){
+async function deleteTicketFromDB(id){
   await db.collection("tickets").doc(id).delete();
 }
 
-function formatDate(ts){
-  if(!ts) return '';
-  return ts.toDate ? ts.toDate().toLocaleString() : new Date(ts).toLocaleString();
+function formatDate(iso){
+  if(!iso) return '';
+  if(iso && typeof iso.toDate === 'function') return iso.toDate().toLocaleString();
+  try { return new Date(iso).toLocaleString(); } catch(e) { return ''; }
 }
+
+function uid(){return 'T'+Date.now().toString(36).toUpperCase().slice(-8)}
+
+function showToast(text,type='info',timeout=3000){const el=document.createElement('div');el.className='toast '+(type==='success'?'success':'');el.textContent=text;toastWrap.appendChild(el);setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),400)},timeout)}
+function createConfetti(){const colors=['🎉','✨','⭐','🎊','💫'];for(let i=0;i<18;i++){const s=document.createElement('span');s.textContent=colors[Math.floor(Math.random()*colors.length)];s.style.left=Math.random()*100+'%';s.style.top=(-10-Math.random()*20)+'px';s.style.fontSize=(12+Math.random()*18)+'px';confettiWrap.appendChild(s);setTimeout(()=>s.remove(),1500)} }
 </script>
 
 <script>
-/* ==== ТВОЙ ОСТАЛЬНОЙ JS (НЕ ТРОНУТ, КРОМЕ await) ==== */
+/* Остальной JS — поведение интерфейса (практически без изменений),
+   но теперь использует функции с Firestore.
+*/
 
+openRequest.onclick=()=>{requestModal.style.display='flex'; document.getElementById('subject').focus();}
+requestCancel.onclick=()=>requestModal.style.display='none';
+openMyTickets.onclick=()=>{renderTickets();ticketsModal.style.display='flex'}
+openInstr.onclick=()=>instrPanel.style.display=instrPanel.style.display==='none'?'block':'none';
+payBtn.onclick=()=>{paymentModal.style.display='flex';updatePaymentUI();}
+closeTicketsBtn.onclick=()=>ticketsModal.style.display='none';
+
+// profile handlers
+avatarBtn.onclick=()=>{
+  profileName.value=topName.textContent;
+  profileModal.style.display='flex';
+};
+closeProfileBtn.onclick=()=>profileModal.style.display='none';
+saveProfileBtn.onclick=()=>{
+  const name=profileName.value.trim()||'Пользователь';
+  topName.textContent=name;
+  greetName.textContent=name;
+  localStorage.setItem('sd_name',name);
+  if(profileAvatar.files[0]){
+    const reader=new FileReader();
+    reader.onload=()=>{avatarImg.src=reader.result;localStorage.setItem('sd_avatar',reader.result);};
+    reader.readAsDataURL(profileAvatar.files[0]);
+  }
+  profileModal.style.display='none';
+};
+
+// submit — теперь записываем в Firestore
 requestForm.addEventListener('submit', async e=>{
   e.preventDefault();
   const subject=document.getElementById('subject').value.trim();
   const priority=document.getElementById('priority').value;
   const desc=document.getElementById('desc').value.trim();
-
   const ticket={
     subject,
     priority,
@@ -95,8 +319,14 @@ requestForm.addEventListener('submit', async e=>{
     status:'Новая',
     comments:[]
   };
+  // запись в Firestore
+  await addTicketToDB(ticket);
 
-  await addTicket(ticket);
+  // оставляем mailto как было
+  const createdAt = new Date().toISOString();
+  const body=[`Subject: ${subject}`,`Priority: ${priority}`,'',`Description:`,desc,'',`Date: ${createdAt}`].join('\n');
+  window.location.href='mailto:sd@test.ru?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+
   requestModal.style.display='none';
   requestForm.reset();
   renderTickets();
@@ -107,9 +337,16 @@ async function renderTickets(filter){
   const q=(filter||'').toLowerCase();
   ticketsContainer.innerHTML='';
   if(!arr.length){ticketsContainer.innerHTML='<div class="small">Заявок нет</div>';return}
-  arr.filter(t=>!q||t.subject.toLowerCase().includes(q)||t.id.toLowerCase().includes(q)).forEach(t=>{
+  arr.filter(t=>!q|| (t.subject && t.subject.toLowerCase().includes(q)) || (t.id && t.id.toLowerCase().includes(q))).forEach(t=>{
     const row=document.createElement('div');row.className='ticket-row';
-    row.innerHTML=`<b>${t.subject}</b><div class="small">${formatDate(t.createdAt)}</div>`;
+    const left=document.createElement('div');
+    const title=document.createElement('div');title.innerHTML=`<strong>#${t.id}</strong> — ${t.subject} <div class="small">${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}</div>`;
+    left.appendChild(title);
+    const actions=document.createElement('div');actions.className='ticket-actions';
+    const openBtn=document.createElement('button');openBtn.className='btn';openBtn.textContent='Открыть';openBtn.onclick=(ev)=>{ev.stopPropagation(); openTicket(t.id);};
+    const delBtn=document.createElement('button');delBtn.className='btn secondary';delBtn.textContent='Удалить';delBtn.onclick=(ev)=>{ev.stopPropagation(); if(confirm('Удалить заявку?')){ deleteTicketFromDB(t.id).then(()=>renderTickets()); }}
+    actions.appendChild(openBtn);actions.appendChild(delBtn);
+    row.appendChild(left);row.appendChild(actions);
     row.onclick=()=>openTicket(t.id);
     ticketsContainer.appendChild(row);
   })
@@ -117,46 +354,146 @@ async function renderTickets(filter){
 
 let currentTicketId=null;
 async function openTicket(id){
-  const arr=await getTickets();
-  const t=arr.find(x=>x.id===id); if(!t) return;
-  currentTicketId=id;
+  ticketsModal.style.display='none';
+  const arr = await getTickets();
+  const t=arr.find(x=>x.id===id);if(!t) return;currentTicketId=id;
+  if(!Array.isArray(t.comments)) t.comments=[];
   ticketTitle.textContent=t.subject;
-  ticketIdEl.textContent='#'+id;
+  ticketIdEl.textContent='#'+t.id;
   ticketMeta.textContent=`${t.priority} · ${t.status} · ${formatDate(t.createdAt)}`;
   ticketDesc.textContent=t.desc;
-  renderComments(t.comments||[]);
+  renderComments(t.comments);
+  newComment.value='';
   ticketModal.style.display='flex';
 }
 
+function renderComments(comments){
+  ticketComments.innerHTML='';
+  if(!Array.isArray(comments) || !comments.length){ticketComments.innerHTML='<div class="small">Комментариев нет</div>';return}
+  comments.forEach(c=>{
+    const d=document.createElement('div');
+    d.style.padding='8px';d.style.borderRadius='8px';d.style.background='rgba(255,255,255,0.02)';d.style.marginBottom='8px';
+    d.innerHTML=`<div class="small">${formatDate(c.at)}</div><div style="margin-top:6px">${c.text}</div>`;
+    ticketComments.appendChild(d)
+  })
+}
+
 addCommentBtn.onclick=async ()=>{
-  const text=newComment.value.trim(); if(!text) return;
-  const arr=await getTickets();
-  const t=arr.find(x=>x.id===currentTicketId);
-  t.comments.push({text,at:new Date().toISOString()});
-  await updateTicket(t);
-  renderComments(t.comments);
-  newComment.value='';
+  const text=newComment.value.trim();if(!text) return;
+  const arr=await getTickets();const idx=arr.findIndex(x=>x.id===currentTicketId);if(idx===-1) return;
+  if(!Array.isArray(arr[idx].comments)) arr[idx].comments=[];
+  const c={text,at:new Date().toISOString()};
+  arr[idx].comments.push(c);
+  await updateTicketInDB(arr[idx]);
+  renderComments(arr[idx].comments);newComment.value='';
 }
 
-cancelTicketBtn.onclick=async ()=>{
-  const arr=await getTickets();
-  const t=arr.find(x=>x.id===currentTicketId);
-  t.status='Отменена';
-  await updateTicket(t);
-  openTicket(currentTicketId);
-  renderTickets();
+cancelTicketBtn.onclick=async ()=>{if(!confirm('Отменить заявку?')) return;const arr=await getTickets();const idx=arr.findIndex(x=>x.id===currentTicketId);if(idx===-1) return;arr[idx].status='Отменена';await updateTicketInDB(arr[idx]);ticketMeta.textContent=`${arr[idx].priority} · ${arr[idx].status} · ${formatDate(arr[idx].createdAt)}`;renderTickets();}
+
+deleteTicketBtn.onclick=async ()=>{if(!confirm('Удалить заявку окончательно?')) return;await deleteTicketFromDB(currentTicketId);ticketModal.style.display='none';renderTickets();}
+
+closeTicketModal.onclick=()=>ticketModal.style.display='none';
+
+// payments helpers (без изменений)
+function computeTotal(months){
+  const base=BASE_PRICE*months;
+  const disc=DISCOUNTS[months]||0;
+  const total=Math.round(base*(1-disc));
+  return {total,disc};
+}
+function parseExpiryDate(){const parts=expiryDateEl.textContent.split('.');return new Date(parts[2],parts[1]-1,parts[0])}
+function formatDMY(date){return String(date.getDate()).padStart(2,'0')+'.'+String(date.getMonth()+1).padStart(2,'0')+'.'+date.getFullYear()}
+function addMonthsToExpiry(months){const d=parseExpiryDate();d.setMonth(d.getMonth()+months);const newDate=formatDMY(d);expiryDateEl.textContent=newDate;localStorage.setItem(STORAGE_KEYS.expiry,newDate)}
+
+// update UI for period
+function updatePaymentUI(){
+  const months=parseInt(periodSelect.value,10);
+  const res=computeTotal(months);
+  totalAmount.textContent=res.total+' ₽';
+  if(res.disc>0){discountLabel.textContent='Скидка: '+(res.disc*100)+'%';} else {discountLabel.textContent=''}
+  const d=parseExpiryDate();d.setMonth(d.getMonth()+months);
+  nextBilling.textContent=formatDMY(d);
+}
+periodSelect.addEventListener('change',updatePaymentUI);
+updatePaymentUI();
+
+// internal payment flow (card / sberpay / sbp) - do not open external apps
+let currentPaymentMethod = null;
+function showInternalPayment(method){
+  currentPaymentMethod = method;
+  payCardBtn.style.display='none';
+  sberpayBtn.style.display='none';
+  sbpBtn.style.display='none';
+  cardForm.style.display='block';
+  updatePaymentUI();
+}
+function hideInternalPayment(){
+  cardForm.style.display='none';
+  payCardBtn.style.display='inline-flex';
+  sberpayBtn.style.display='inline-flex';
+  sbpBtn.style.display='inline-flex';
+  currentPaymentMethod = null;
 }
 
-deleteTicketBtn.onclick=async ()=>{
-  await deleteTicket(currentTicketId);
-  ticketModal.style.display='none';
-  renderTickets();
-}
+payCardBtn.onclick=()=>showInternalPayment('card');
+
+sberpayBtn.onclick=()=>{
+  const months=parseInt(periodSelect.value,10);
+  const res=computeTotal(months);
+  addMonthsToExpiry(months);
+  paymentModal.style.display='none';
+  showToast(`Оплата через SberPay проведена — спасибо! (${res.total} ₽)`, 'success');
+  createConfetti();
+};
+
+sbpBtn.onclick=()=>{
+  const months=parseInt(periodSelect.value,10);
+  const res=computeTotal(months);
+  addMonthsToExpiry(months);
+  paymentModal.style.display='none';
+  showToast(`Оплата через СБП проведена — спасибо! (${res.total} ₽)`, 'success');
+  createConfetti();
+};
+
+cancelCardPayment.onclick=()=>{hideInternalPayment();}
+
+cardPaymentForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const months=parseInt(periodSelect.value,10);
+  paymentModal.style.display='none';
+  addMonthsToExpiry(months);
+
+  if(currentPaymentMethod==='card'){
+    showToast('Оплата картой проведена — спасибо!', 'success');
+  } else if(currentPaymentMethod==='sberpay'){
+    showToast('Оплата через SberPay проведена — спасибо!', 'success');
+  } else if(currentPaymentMethod==='sbp'){
+    showToast('Оплата через СБП проведена — спасибо!', 'success');
+  } else {
+    showToast('Оплата проведена — спасибо!', 'success');
+  }
+
+  createConfetti();
+  cardPaymentForm.reset();
+  hideInternalPayment();
+});
+
+function addMonthToExpiry(){addMonthsToExpiry(1)} // backward compat
+
+const savedExpiry=localStorage.getItem(STORAGE_KEYS.expiry);if(savedExpiry)expiryDateEl.textContent=savedExpiry;
+
+// search
+ticketSearch.addEventListener('input',()=>renderTickets(ticketSearch.value));
+
+// load profile
+const savedName=localStorage.getItem('sd_name');
+if(savedName){topName.textContent=savedName;greetName.textContent=savedName;}
+const savedAvatar=localStorage.getItem('sd_avatar');
+if(savedAvatar){avatarImg.src=savedAvatar;} else {avatarImg.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';}
 
 (function init(){
   renderTickets();
 })();
 </script>
-
 </body>
 </html>
