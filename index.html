@@ -719,7 +719,6 @@ if (fileInput.files[0]) {
   await addTicketToDB(ticket);
   const createdAt = new Date().toISOString();
   const body=[`Subject: ${subject}`,`Priority: ${priority}`,'',`Description:`,desc,'',`Date: ${createdAt}`].join('\n');
-  window.location.href='mailto:sd@test.ru?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   hideModal(requestModal);
   requestForm.reset();
   renderTickets();
