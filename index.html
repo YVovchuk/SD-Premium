@@ -641,12 +641,27 @@ if (t.attachments && t.attachments.length) {
 }
 function renderComments(comments){
   ticketComments.innerHTML = '';
-  if(!Array.isArray(comments) || !comments.length){ ticketComments.innerHTML = '<div class="small">Комментариев нет</div>'; return; }
+
+  if(!Array.isArray(comments) || !comments.length){
+    ticketComments.innerHTML = '<div class="small">Комментариев нет</div>';
+    return;
+  }
+
   comments.forEach(c=>{
-    const d=document.createElement('div');
-    d.style.padding='8px'; d.style.borderRadius='8px'; d.style.background='rgba(255,255,255,0.02)'; d.style.marginBottom='8px';
-    d.innerHTML = `<div class="small">${formatDate(c.at)}</div><div style="margin-top:6px">${c.text}</div>`;
-    ticketComments.appendChild(d);
+    const isStaff = c.role === 'staff';
+
+    const staffBadge = isStaff
+      ? `<span style="color:#16a34a;font-weight:600;margin-left:6px">(Сотрудник поддержки)</span>`
+      : '';
+
+    ticketComments.innerHTML += `
+      <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px">
+        <div class="small">
+          <b>${c.byName || 'Пользователь'}</b>${staffBadge}
+        </div>
+        <div style="margin-top:6px">${c.text}</div>
+      </div>
+    `;
   });
 }
 
