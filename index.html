@@ -440,16 +440,16 @@ auth.onAuthStateChanged(async user=>{
       console.error('read user doc error', e);
     }
   } else {
-    logoutBtn.style.display = 'none';
-    topName.textContent = 'Гость';
-    greetName.textContent = 'Гость';
-    avatarImg.src = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-    accountStatus.textContent = 'Не авторизован';
-    accountPlanEl.textContent = '—';
-    expiryDateEl.textContent = localStorage.getItem(STORAGE_KEYS.expiry) || '—';
-    disableAppForGuest();
-    renderTickets();
-  }
+  topName.textContent = 'Гость';
+  greetName.textContent = 'Гость';
+  avatarImg.src = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+  accountStatus.textContent = 'Не авторизован';
+  disableAppForGuest();
+  renderTickets();
+
+  // 👇 сразу показываем окно ВХОДА
+  openLogin();
+}
 });
 
 /* ====== enable/disable helpers ====== */
