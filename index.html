@@ -1,60 +1,75 @@
 <!doctype html>
+
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SD Premium — Личный кабинет</title>
 
-  <!-- Google fonts -->
+
+
+  <!— Google fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Firebase (compat for quick integration) -->
+
+
+  <!— Firebase (compat for quick integration) -->
+
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+
 
   <style>
     :root{--bg:#070507;--card:#0f0e10;--muted:#9b98a3;--accent:linear-gradient(90deg,#8b5cf6,#06b6d4);--radius:14px;--shadow:0 6px 30px rgba(2,2,6,.6);font-family:Inter,system-ui; color-scheme:dark;}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:var(--bg);color:#fff;display:flex;justify-content:center;padding:28px}
-    .container{max-width:1100px;width:100%;transition:filter .2s ease}
-    .container.blurred{filter:blur(6px) brightness(.7)}
-    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-    .brand{display:flex;gap:14px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}
-    .user{display:flex;gap:12px;align-items:center}
-    .avatar{width:44px;height:44px;border-radius:10px;background:#141217;border:1px solid rgba(255,255,255,.05);cursor:pointer;padding:0;overflow:hidden}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}
-    .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-    .btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff}
-    .btn.secondary{background:#151319;border:1px solid rgba(255,255,255,.08)}
-    .panel{background:var(--card);border-radius:12px;padding:16px}
-    .pill{background:rgba(255,255,255,.05);padding:8px 12px;border-radius:999px;font-weight:600}
-    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:1000}
-    .modal{background:#0f0f12;border-radius:14px;padding:20px;width:100%;max-width:760px}
-    .field{display:flex;flex-direction:column;margin-bottom:12px}
-    .field input,.field textarea,.field select{background:#141217;border:1px solid rgba(255,255,255,.08);color:#fff;padding:10px;border-radius:8px}
-    .muted{color:var(--muted);font-size:13px}
-    .ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px}
-    .ticket-actions button{margin-left:8px}
-    .small{font-size:13px;color:var(--muted)}
-    /* toast + confetti */
-    .toast-wrap{position:fixed;top:18px;right:18px;z-index:2000;display:flex;flex-direction:column;gap:8px}
-    .toast{background:#111216;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.04);box-shadow:0 8px 30px rgba(0,0,0,.6);color:#fff;min-width:180px}
-    .toast.success{border-left:4px solid #22c55e}
-    .confetti{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:1500}
-    .confetti span{position:absolute;font-size:20px;animation:confetti 1200ms linear forwards}
-    @keyframes confetti{from{transform:translateY(0) rotate(0) scale(1);opacity:1}to{transform:translateY(260px) rotate(520deg) scale(.8);opacity:0}}
-    /* small helpers */
+    *{box-sizing:border-box}*
+    *body{margin:0;min-height:100vh;background:var(--bg);color:#fff;display:flex;justify-content:center;padding:28px}*
+    *.container{max-width:1100px;width:100%;transition:filter .2s ease}*
+    *.container.blurred{filter:blur(6px) brightness(.7)}*
+    *.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}*
+    *.brand{display:flex;gap:14px;align-items:center}*
+    *.logo{width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}*
+    *.user{display:flex;gap:12px;align-items:center}*
+    *.avatar{width:44px;height:44px;border-radius:10px;background:#141217;border:1px solid rgba(255,255,255,.05);cursor:pointer;padding:0;overflow:hidden}*
+    *.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:20px}*
+    *.actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}*
+    *.btn{border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#fff}*
+    *.btn.secondary{background:#151319;border:1px solid rgba(255,255,255,.08)}*
+    *.panel{background:var(--card);border-radius:12px;padding:16px}*
+    *.pill{background:rgba(255,255,255,.05);padding:8px 12px;border-radius:999px;font-weight:600}*
+    *.modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:1000}*
+    *.modal{background:#0f0f12;border-radius:14px;padding:20px;width:100%;max-width:760px}*
+    *.field{display:flex;flex-direction:column;margin-bottom:12px}*
+    *.field input,.field textarea,.field select{background:#141217;border:1px solid rgba(255,255,255,.08);color:#fff;padding:10px;border-radius:8px}*
+    *.muted{color:var(--muted);font-size:13px}*
+    *.ticket-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px}*
+    *.ticket-actions button{margin-left:8px}*
+    *.small{font-size:13px;color:var(--muted)}*
+    */* toast + confetti */*
+    *.toast-wrap{position:fixed;top:18px;right:18px;z-index:2000;display:flex;flex-direction:column;gap:8px}*
+    *.toast{background:#111216;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.04);box-shadow:0 8px 30px rgba(0,0,0,.6);color:#fff;min-width:180px}*
+    *.toast.success{border-left:4px solid #22c55e}*
+    *.confetti{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:1500}*
+    *.confetti span{position:absolute;font-size:20px;animation:confetti 1200ms linear forwards}*
+    *@keyframes confetti{from{transform:translateY(0) rotate(0) scale(1);opacity:1}to{transform:translateY(260px) rotate(520deg) scale(.8);opacity:0}}*
+    */* small helpers \*/
     .auth-actions{display:flex;gap:8px;margin-top:8px}
     .link-btn{background:transparent;border:0;color:var(--muted);cursor:pointer;padding:8px;border-radius:8px}
   </style>
+
 </head>
 <body>
 
-<!-- MAIN CONTAINER (will blur when auth modal open) -->
+
+
+<!— MAIN CONTAINER (will blur when auth modal open) -->
+
 <div class="container" id="mainContainer">
   <div class="topbar">
     <div class="brand"><div class="logo">SD</div><div><b>SD Premium</b><div style="font-size:12px;color:var(--muted)">Личный кабинет</div></div></div>
@@ -64,6 +79,8 @@
       <button id="logoutBtn" class="btn secondary" style="display:none;margin-left:8px">Выйти</button>
     </div>
   </div>
+
+
 
   <main class="card">
     <section>
@@ -91,18 +108,24 @@
   </main>
 </div>
 
-<!-- PROFILE MODAL -->
+
+
+<!— PROFILE MODAL -->
+
 <div class="modal-backdrop" id="profileModal"><div class="modal">
   <h3>Настройки профиля</h3>
   <div class="field"><label>Имя</label><input id="profileName" /></div>
-  <div class="field"><label>Аватар</label><input type="file" id="profileAvatar" accept="image/*" /></div>
+  <div class="field"><label>Аватар</label><input type="file" id="profileAvatar" accept="image/\*" /></div>
   <div style="display:flex;gap:8px;justify-content:flex-end">
     <button class="btn secondary" id="closeProfileBtn">Закрыть</button>
     <button class="btn" id="saveProfileBtn">Сохранить</button>
   </div>
 </div></div>
 
-<!-- REQUEST MODAL -->
+
+
+<!— REQUEST MODAL -->
+
 <div class="modal-backdrop" id="requestModal"><div class="modal">
   <h3>Создать заявку</h3>
   <form id="requestForm">
@@ -117,7 +140,10 @@
   </form>
 </div></div>
 
-<!-- TICKET DETAIL -->
+
+
+<!— TICKET DETAIL -->
+
 <div class="modal-backdrop" id="ticketModal"><div class="modal">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 id="ticketTitle">Заявка</h3><div class="small" id="ticketId">#0</div></div>
   <div class="small" id="ticketMeta"></div>
@@ -132,7 +158,10 @@
   </div>
 </div></div>
 
-<!-- MY TICKETS -->
+
+
+<!— MY TICKETS -->
+
 <div class="modal-backdrop" id="ticketsModal"><div class="modal">
   <h3>Мои заявки</h3>
   <div style="margin-bottom:10px"><input id="ticketSearch" placeholder="Поиск по теме или ID" style="width:100%;padding:8px;border-radius:8px;background:#141217;border:1px solid rgba(255,255,255,.06);color:#fff"/></div>
@@ -140,7 +169,10 @@
   <div style="text-align:right;margin-top:12px"><button class="btn secondary" id="closeTicketsBtn">Закрыть</button></div>
 </div></div>
 
-<!-- PAYMENT (unchanged layout) -->
+
+
+<!— PAYMENT (unchanged layout) -->
+
 <div class="modal-backdrop" id="paymentModal"><div class="modal">
   <h3>Оплата</h3>
   <div class="muted">Оплата доступна по нескольким способам — <strong id="priceLabel">499 ₽/мес</strong></div>
@@ -177,7 +209,10 @@
   <div style="text-align:right;margin-top:14px"><button class="btn secondary" id="closePaymentBtn">Закрыть</button></div>
 </div></div>
 
-<!-- LOGIN MODAL -->
+
+
+<!— LOGIN MODAL -->
+
 <div class="modal-backdrop" id="loginModal"><div class="modal" style="max-width:420px">
   <h3>Вход</h3>
   <div class="field"><label>Email</label><input id="loginEmail" type="email"></div>
@@ -188,7 +223,10 @@
   </div>
 </div></div>
 
-<!-- REGISTER MODAL -->
+
+
+<!— REGISTER MODAL -->
+
 <div class="modal-backdrop" id="registerModal"><div class="modal" style="max-width:420px">
   <h3>Регистрация</h3>
   <div class="field"><label>Имя</label><input id="registerName" required></div>
@@ -201,17 +239,23 @@
 </div></div>
 
 
-<!-- toast + confetti -->
+
+
+
+<!— toast + confetti -->
+
 <div class="toast-wrap" id="toastWrap"></div>
 <div class="confetti" id="confetti"></div>
 
+
+
 <script>
-/* ====== FIREBASE CONFIG — ЗАМЕНИ ПРИ НУЖДЕ ====== */
+/\* ====== FIREBASE CONFIG — ЗАМЕНИ ПРИ НУЖДЕ ====== \*/
 const firebaseConfig = {
   apiKey: "AIzaSyAoTaDDCB-TUZzSlRuUKvnQ8QcJPQdERFE",
-  authDomain: "sd-premium-b3b78.firebaseapp.com",
+  authDomain: "[sd-premium-b3b78.firebaseapp.com](http://sd-premium-b3b78.firebaseapp.com)",
   projectId: "sd-premium-b3b78",
-  storageBucket: "sd-premium-b3b78.firebasestorage.app",
+  storageBucket: "[sd-premium-b3b78.firebasestorage.app](http://sd-premium-b3b78.firebasestorage.app)",
   messagingSenderId: "475471999638",
   appId: "1:475471999638:web:360d369103612e96f6c8b7",
   measurementId: "G-DB20YYY5BN"
@@ -221,633 +265,643 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 </script>
 
+
+
 <script>
-/* ====== UI ELEMENTS ====== */
-const mainContainer = document.getElementById('mainContainer');
-const requestModal = document.getElementById('requestModal');
-const ticketsModal = document.getElementById('ticketsModal');
-const ticketModal = document.getElementById('ticketModal');
-const profileModal = document.getElementById('profileModal');
-const paymentModal = document.getElementById('paymentModal');
+/\* ====== UI ELEMENTS ====== */*
+*const mainContainer = document.getElementById('mainContainer');*
+*const requestModal = document.getElementById('requestModal');*
+*const ticketsModal = document.getElementById('ticketsModal');*
+*const ticketModal = document.getElementById('ticketModal');*
+*const profileModal = document.getElementById('profileModal');*
+*const paymentModal = document.getElementById('paymentModal');*
 
 
-const avatarBtn = document.getElementById('avatarBtn');
-const avatarImg = document.getElementById('avatarImg');
-const topName = document.getElementById('topName');
-const greetName = document.getElementById('greetName');
-const accountStatus = document.getElementById('accountStatus');
+*const avatarBtn = document.getElementById('avatarBtn');*
+*const avatarImg = document.getElementById('avatarImg');*
+*const topName = document.getElementById('topName');*
+*const greetName = document.getElementById('greetName');*
+*const accountStatus = document.getElementById('accountStatus');*
 
-const openRequest = document.getElementById('openRequest');
-const openMyTickets = document.getElementById('openMyTickets');
-const openInstr = document.getElementById('openInstr');
-const instrPanel = document.getElementById('instrPanel');
-const payBtn = document.getElementById('payBtn');
+*const openRequest = document.getElementById('openRequest');*
+*const openMyTickets = document.getElementById('openMyTickets');*
+*const openInstr = document.getElementById('openInstr');*
+*const instrPanel = document.getElementById('instrPanel');*
+*const payBtn = document.getElementById('payBtn');*
 
-const requestForm = document.getElementById('requestForm');
-const requestCancel = document.getElementById('requestCancel');
+*const requestForm = document.getElementById('requestForm');*
+*const requestCancel = document.getElementById('requestCancel');*
 
-const ticketsContainer = document.getElementById('ticketsContainer');
-const ticketTitle = document.getElementById('ticketTitle');
-const ticketIdEl = document.getElementById('ticketId');
-const ticketMeta = document.getElementById('ticketMeta');
-const ticketDesc = document.getElementById('ticketDesc');
-const ticketComments = document.getElementById('ticketComments');
-const newComment = document.getElementById('newComment');
+*const ticketsContainer = document.getElementById('ticketsContainer');*
+*const ticketTitle = document.getElementById('ticketTitle');*
+*const ticketIdEl = document.getElementById('ticketId');*
+*const ticketMeta = document.getElementById('ticketMeta');*
+*const ticketDesc = document.getElementById('ticketDesc');*
+*const ticketComments = document.getElementById('ticketComments');*
+*const newComment = document.getElementById('newComment');*
 
-const addCommentBtn = document.getElementById('addCommentBtn');
-const cancelTicketBtn = document.getElementById('cancelTicketBtn');
-const deleteTicketBtn = document.getElementById('deleteTicketBtn');
-const closeTicketModal = document.getElementById('closeTicketModal');
+*const addCommentBtn = document.getElementById('addCommentBtn');*
+*const cancelTicketBtn = document.getElementById('cancelTicketBtn');*
+*const deleteTicketBtn = document.getElementById('deleteTicketBtn');*
+*const closeTicketModal = document.getElementById('closeTicketModal');*
 
-const ticketSearch = document.getElementById('ticketSearch');
-const closeTicketsBtn = document.getElementById('closeTicketsBtn');
+*const ticketSearch = document.getElementById('ticketSearch');*
+*const closeTicketsBtn = document.getElementById('closeTicketsBtn');*
 
-const profileName = document.getElementById('profileName');
-const profileAvatar = document.getElementById('profileAvatar');
-const closeProfileBtn = document.getElementById('closeProfileBtn');
-const saveProfileBtn = document.getElementById('saveProfileBtn');
+*const profileName = document.getElementById('profileName');*
+*const profileAvatar = document.getElementById('profileAvatar');*
+*const closeProfileBtn = document.getElementById('closeProfileBtn');*
+*const saveProfileBtn = document.getElementById('saveProfileBtn');*
 
-const periodSelect = document.getElementById('periodSelect');
-const totalAmount = document.getElementById('totalAmount');
-const nextBilling = document.getElementById('nextBilling');
-const discountLabel = document.getElementById('discountLabel');
-const cardForm = document.getElementById('cardForm');
-const payCardBtn = document.getElementById('payCardBtn');
-const sberpayBtn = document.getElementById('sberpayBtn');
-const sbpBtn = document.getElementById('sbpBtn');
-const closePaymentBtn = document.getElementById('closePaymentBtn');
-const cancelCardPayment = document.getElementById('cancelCardPayment');
-const cardPaymentForm = document.getElementById('cardPaymentForm');
-
-
-const authTitle = document.getElementById('authTitle');
-
-const logoutBtn = document.getElementById('logoutBtn');
-
-const toastWrap = document.getElementById('toastWrap');
-const confettiWrap = document.getElementById('confetti');
-
-const expiryDateEl = document.getElementById('expiryDate');
-const accountPlanEl = document.getElementById('accountPlan');
-
-const STORAGE_KEYS = { expiry: 'sd_expiry' };
-const BASE_PRICE = 499;
-const DISCOUNTS = {3:0.05,6:0.10,12:0.20};
-
-let currentUser = null;
-let currentTicketId = null;
-
-/* ====== helpers ====== */
-function showModal(modal){
-  modal.style.display = 'flex';
-  mainContainer.classList.add('blurred');
-}
-function hideModal(modal){
-  modal.style.display = 'none';
-  const visible = [...document.querySelectorAll('.modal-backdrop')].some(m => m.style.display === 'flex');
-  if(!visible) mainContainer.classList.remove('blurred');
-}
-function showToast(text, type='info', timeout=3000){
-  const el=document.createElement('div'); el.className='toast '+(type==='success'?'success':''); el.textContent=text; toastWrap.appendChild(el);
-  setTimeout(()=>{el.style.opacity='0'; setTimeout(()=>el.remove(),400)}, timeout);
-}
-function createConfetti(){const colors=['🎉','✨','⭐','🎊','💫'];for(let i=0;i<18;i++){const s=document.createElement('span');s.textContent=colors[Math.floor(Math.random()*colors.length)];s.style.left=Math.random()*100+'%';s.style.top=(-10-Math.random()*20)+'px';s.style.fontSize=(12+Math.random()*18)+'px';confettiWrap.appendChild(s);setTimeout(()=>s.remove(),1500)}}
-
-/* ====== Date helpers (robust) ====== */
-function formatDMY(date){
-  if(!(date instanceof Date)) return '';
-  return String(date.getDate()).padStart(2,'0') + '.' + String(date.getMonth()+1).padStart(2,'0') + '.' + date.getFullYear();
-}
-function formatDate(ts){
-  if(!ts) return '';
-  if(ts && typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
-  if(typeof ts === 'string'){
-    if(/^\d{2}\.\d{2}\.\d{4}$/.test(ts)) return ts;
-    if(/^\d{4}-\d{2}-\d{2}/.test(ts)){
-      const d=new Date(ts); return isNaN(d)?ts:d.toLocaleString();
-    }
-    const d=new Date(ts); return isNaN(d)?ts:d.toLocaleString();
-  }
-  if(ts instanceof Date) return ts.toLocaleString();
-  return String(ts);
-}
-function formatExpiry(expiry){
-  if(!expiry) return '—';
-  if(typeof expiry === 'string'){
-    if(/^\d{2}\.\d{2}\.\d{4}$/.test(expiry)) return expiry;
-    if(/^\d{4}-\d{2}-\d{2}/.test(expiry)){
-      const d=new Date(expiry); return isNaN(d)?expiry:formatDMY(d);
-    }
-    const d=new Date(expiry); return isNaN(d)?expiry:formatDMY(d);
-  }
-  if(expiry && typeof expiry.toDate === 'function') return formatDMY(expiry.toDate());
-  if(expiry instanceof Date) return formatDMY(expiry);
-  return String(expiry);
-}
-
-/* ====== AUTH UI ====== */
-function openAuthModal(){
-  authTitle.textContent = 'Вход / регистрация';
-  authEmail.value=''; authPassword.value='';
-  showModal(authModal);
-}
-function closeAuthModal(){ hideModal(authModal); }
-const loginModal = document.getElementById('loginModal');
-const registerModal = document.getElementById('registerModal');
-
-const loginEmail = document.getElementById('loginEmail');
-const loginPassword = document.getElementById('loginPassword');
-const loginBtn = document.getElementById('loginBtn');
-
-const registerName = document.getElementById('registerName');
-const registerEmail = document.getElementById('registerEmail');
-const registerPassword = document.getElementById('registerPassword');
-const registerBtn = document.getElementById('registerBtn');
-
-const openRegisterBtn = document.getElementById('openRegisterBtn');
-const openLoginBtn = document.getElementById('openLoginBtn');
-
-function openLogin(){
-  showModal(loginModal);
-}
-function openRegister(){
-  showModal(registerModal);
-}
-
-openRegisterBtn.onclick = ()=>{
-  hideModal(loginModal);
-  openRegister();
-};
-
-openLoginBtn.onclick = ()=>{
-  hideModal(registerModal);
-  openLogin();
-};
-
-loginBtn.onclick = async ()=>{
-  try{
-    const email = loginEmail.value.trim();
-    const pass = loginPassword.value;
-    if(!email || !pass) return alert('Введите email и пароль');
-    await auth.signInWithEmailAndPassword(email, pass);
-    hideModal(loginModal);
-  }catch(err){
-    alert(err.message);
-  }
-};
-
-registerBtn.onclick = async ()=>{
-  try{
-    const name = registerName.value.trim();
-    const email = registerEmail.value.trim();
-    const pass = registerPassword.value;
-
-    if(!name) return alert('Введите имя');
-    if(!email || !pass) return alert('Введите email и пароль');
-
-    const userCred = await auth.createUserWithEmailAndPassword(email, pass);
-
-    await db.collection('users').doc(userCred.user.uid).set({
-      name: name,
-      avatar: null,
-      expiry: null,
-      payments: []
-    });
-
-    hideModal(registerModal);
-  }catch(err){
-    alert(err.message);
-  }
-};
+*const periodSelect = document.getElementById('periodSelect');*
+*const totalAmount = document.getElementById('totalAmount');*
+*const nextBilling = document.getElementById('nextBilling');*
+*const discountLabel = document.getElementById('discountLabel');*
+*const cardForm = document.getElementById('cardForm');*
+*const payCardBtn = document.getElementById('payCardBtn');*
+*const sberpayBtn = document.getElementById('sberpayBtn');*
+*const sbpBtn = document.getElementById('sbpBtn');*
+*const closePaymentBtn = document.getElementById('closePaymentBtn');*
+*const cancelCardPayment = document.getElementById('cancelCardPayment');*
+*const cardPaymentForm = document.getElementById('cardPaymentForm');*
 
 
+*const authTitle = document.getElementById('authTitle');*
+
+*const logoutBtn = document.getElementById('logoutBtn');*
+
+*const toastWrap = document.getElementById('toastWrap');*
+*const confettiWrap = document.getElementById('confetti');*
+
+*const expiryDateEl = document.getElementById('expiryDate');*
+*const accountPlanEl = document.getElementById('accountPlan');*
+
+*const STORAGE_KEYS = { expiry: 'sd_expiry' };*
+*const BASE_PRICE = 499;*
+*const DISCOUNTS = {3:0.05,6:0.10,12:0.20};*
+
+*let currentUser = null;*
+*let currentTicketId = null;*
+
+*/* ====== helpers ====== */*
+*function showModal(modal){*
+  [*modal.style*](http://modal.style)*.display = 'flex';*
+  *mainContainer.classList.add('blurred');*
+*}*
+*function hideModal(modal){*
+  [*modal.style*](http://modal.style)*.display = 'none';*
+  *const visible = \[...document.querySelectorAll('.modal-backdrop')\].some(m => [m.style](http://m.style).display === 'flex');*
+  *if(!visible) mainContainer.classList.remove('blurred');*
+*}*
+*function showToast(text, type='info', timeout=3000){*
+  *const el=document.createElement('div'); el.className='toast '+(type==='success'?'success':''); el.textContent=text; toastWrap.appendChild(el);*
+  *setTimeout(()=>{[el.style](http://el.style).opacity='0'; setTimeout(()=>el.remove(),400)}, timeout);*
+*}*
+*function createConfetti(){const colors=\['🎉','✨','⭐','🎊','💫'\];for(let i=0;i<18;i++){const s=document.createElement('span');s.textContent=colors\[Math.floor(Math.random()\*colors.length)\];[s.style](http://s.style).left=Math.random()\*100+'%';[s.style.top](http://s.style.top)=(-10-Math.random()\*20)+'px';[s.style](http://s.style).fontSize=(12+Math.random()\*18)+'px';confettiWrap.appendChild(s);setTimeout(()=>s.remove(),1500)}}*
+
+*/* ====== Date helpers (robust) ====== */*
+*function formatDMY(date){*
+  *if(!(date instanceof Date)) return '';*
+  *return String(date.getDate()).padStart(2,'0') + '.' + String(date.getMonth()+1).padStart(2,'0') + '.' + date.getFullYear();*
+*}*
+*function formatDate(ts){*
+  *if(!ts) return '';*
+  *if(ts && typeof ts.toDate === 'function') return ts.toDate().toLocaleString();*
+  *if(typeof ts === 'string'){*
+    *if(/^\\d{2}.\\d{2}.\\d{4}$/.test(ts)) return ts;*
+    *if(/^\\d{4}-\\d{2}-\\d{2}/.test(ts)){*
+      *const d=new Date(ts); return isNaN(d)?ts:d.toLocaleString();*
+    *}*
+    *const d=new Date(ts); return isNaN(d)?ts:d.toLocaleString();*
+  *}*
+  *if(ts instanceof Date) return ts.toLocaleString();*
+  *return String(ts);*
+*}*
+*function formatExpiry(expiry){*
+  *if(!expiry) return '—';*
+  *if(typeof expiry === 'string'){*
+    *if(/^\\d{2}.\\d{2}.\\d{4}$/.test(expiry)) return expiry;*
+    *if(/^\\d{4}-\\d{2}-\\d{2}/.test(expiry)){*
+      *const d=new Date(expiry); return isNaN(d)?expiry:formatDMY(d);*
+    *}*
+    *const d=new Date(expiry); return isNaN(d)?expiry:formatDMY(d);*
+  *}*
+  *if(expiry && typeof expiry.toDate === 'function') return formatDMY(expiry.toDate());*
+  *if(expiry instanceof Date) return formatDMY(expiry);*
+  *return String(expiry);*
+*}*
+
+*/* ====== AUTH UI ====== */*
+*function openAuthModal(){*
+  *authTitle.textContent = 'Вход / регистрация';*
+  *authEmail.value=''; authPassword.value='';*
+  *showModal(authModal);*
+*}*
+*function closeAuthModal(){ hideModal(authModal); }*
+*const loginModal = document.getElementById('loginModal');*
+*const registerModal = document.getElementById('registerModal');*
+
+*const loginEmail = document.getElementById('loginEmail');*
+*const loginPassword = document.getElementById('loginPassword');*
+*const loginBtn = document.getElementById('loginBtn');*
+
+*const registerName = document.getElementById('registerName');*
+*const registerEmail = document.getElementById('registerEmail');*
+*const registerPassword = document.getElementById('registerPassword');*
+*const registerBtn = document.getElementById('registerBtn');*
+
+*const openRegisterBtn = document.getElementById('openRegisterBtn');*
+*const openLoginBtn = document.getElementById('openLoginBtn');*
+
+*function openLogin(){*
+  *showModal(loginModal);*
+*}*
+*function openRegister(){*
+  *showModal(registerModal);*
+*}*
+
+*openRegisterBtn.onclick = ()=>{*
+  *hideModal(loginModal);*
+  *openRegister();*
+*};*
+
+*openLoginBtn.onclick = ()=>{*
+  *hideModal(registerModal);*
+  *openLogin();*
+*};*
+
+*loginBtn.onclick = async ()=>{*
+  *try{*
+    *const email = loginEmail.value.trim();*
+    *const pass = loginPassword.value;*
+    *if(!email || !pass) return alert('Введите email и пароль');*
+    *await auth.signInWithEmailAndPassword(email, pass);*
+    *hideModal(loginModal);*
+  *}catch(err){*
+    *alert(err.message);*
+  *}*
+*};*
+
+*registerBtn.onclick = async ()=>{*
+  *try{*
+    *const name = registerName.value.trim();*
+    *const email = registerEmail.value.trim();*
+    *const pass = registerPassword.value;*
+
+    *if(!name) return alert('Введите имя');*
+    *if(!email || !pass) return alert('Введите email и пароль');*
+
+    *const userCred = await auth.createUserWithEmailAndPassword(email, pass);*
+
+    *await db.collection('users').doc(userCred.user.uid).set({*
+      *name: name,*
+      *avatar: null,*
+      *expiry: null,*
+      *payments: \[\]*
+    *});*
+
+    *hideModal(registerModal);*
+  *}catch(err){*
+    *alert(err.message);*
+  *}*
+*};*
 
 
 
-/* ====== AUTH STATE ====== */
-auth.onAuthStateChanged(async user=>{
-  currentUser = user;
-  if(user){
-    logoutBtn.style.display = 'inline-flex';
-    try{
-      const userDoc = await db.collection('users').doc(user.uid).get();
-      const data = userDoc.exists ? userDoc.data() : {};
-      topName.textContent = data.name || (user.email || 'Пользователь');
-      greetName.textContent = data.name || (user.email || 'Пользователь');
-      avatarImg.src = data.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-      accountStatus.textContent = 'Авторизован';
-      accountPlanEl.textContent = data.plan || 'Премиум';
-      expiryDateEl.textContent = data.expiry ? formatExpiry(data.expiry) : '—';
-      enableAppForUser();
-      renderTickets();
-    }catch(e){
-      console.error('read user doc error', e);
-    }
-  } else {
-  topName.textContent = 'Гость';
-  greetName.textContent = 'Гость';
-  avatarImg.src = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-  accountStatus.textContent = 'Не авторизован';
-  disableAppForGuest();
-  renderTickets();
 
-  // 👇 сразу показываем окно ВХОДА
-  openLogin();
-}
-});
 
-/* ====== enable/disable helpers ====== */
-function enableAppForUser(){
-  avatarBtn.title = 'Открыть профиль';
-}
-function disableAppForGuest(){
-  avatarBtn.title = 'Войти';
-}
+*/* ====== AUTH STATE ====== */*
+*auth.onAuthStateChanged(async user=>{*
+  *currentUser = user;*
+  *if(user){*
+    [*logoutBtn.style*](http://logoutBtn.style)*.display = 'inline-flex';*
+    *try{*
+      *const userDoc = await db.collection('users').doc(user.uid).get();*
+      *const data = userDoc.exists ? [userDoc.data](http://userDoc.data)() : {};*
+      *topName.textContent = [data.name](http://data.name) || ([user.email](http://user.email) || 'Пользователь');*
+      *greetName.textContent = [data.name](http://data.name) || ([user.email](http://user.email) || 'Пользователь');*
+      *avatarImg.src = data.avatar || '[https://cdn-icons-png.flaticon.com/512/847/847969.png](https://cdn-icons-png.flaticon.com/512/847/847969.png)';*
+      *accountStatus.textContent = 'Авторизован';*
+      *accountPlanEl.textContent = data.plan || 'Премиум';*
+      *expiryDateEl.textContent = data.expiry ? formatExpiry(data.expiry) : '—';*
+      *enableAppForUser();*
+      *renderTickets();*
+    *}catch(e){*
+      *console.error('read user doc error', e);*
+    *}*
+  *} else {*
+  *topName.textContent = 'Гость';*
+  *greetName.textContent = 'Гость';*
+  *avatarImg.src = '[https://cdn-icons-png.flaticon.com/512/847/847969.png](https://cdn-icons-png.flaticon.com/512/847/847969.png)';*
+  *accountStatus.textContent = 'Не авторизован';*
+  *disableAppForGuest();*
+  *renderTickets();*
 
-/* avatar click */
-avatarBtn.onclick = ()=>{
-  if(currentUser) {
-    profileName.value = topName.textContent;
-    showModal(profileModal);
-  } else {
-    openLogin();
-  }
-};
+  *// 👇 сразу показываем окно ВХОДА*
+  *openLogin();*
+*}*
+*});*
 
-/* logout */
-logoutBtn.onclick = async ()=>{
-  try{
-    await auth.signOut();
-    showToast('Выход выполнен');
-  }catch(e){ console.error(e); alert('Ошибка выхода: '+e.message); }
-};
+*/* ====== enable/disable helpers ====== */*
+*function enableAppForUser(){*
+  *avatarBtn.title = 'Открыть профиль';*
+*}*
+*function disableAppForGuest(){*
+  *avatarBtn.title = 'Войти';*
+*}*
 
-/* profile save */
-closeProfileBtn.onclick = ()=>hideModal(profileModal);
-saveProfileBtn.onclick = async ()=>{
-  if(!currentUser) return alert('Войдите чтобы сохранить профиль');
-  const name = profileName.value.trim() || 'Пользователь';
-  if(profileAvatar.files[0]){
-    const reader = new FileReader();
-    reader.onload = async ()=> {
-      const avatarData = reader.result;
-      await db.collection('users').doc(currentUser.uid).set({ name, avatar: avatarData }, { merge:true });
-      topName.textContent = name; greetName.textContent = name; avatarImg.src = avatarData;
-      hideModal(profileModal);
-      showToast('Профиль сохранён','success');
-    };
-    reader.readAsDataURL(profileAvatar.files[0]);
-  } else {
-    await db.collection('users').doc(currentUser.uid).set({ name }, { merge:true });
-    topName.textContent = name; greetName.textContent = name;
-    hideModal(profileModal);
-    showToast('Профиль сохранён','success');
-  }
-};
+*/* avatar click */*
+*avatarBtn.onclick = ()=>{*
+  *if(currentUser) {*
+    *profileName.value = topName.textContent;*
+    *showModal(profileModal);*
+  *} else {*
+    *openLogin();*
+  *}*
+*};*
 
-/* ====== Firestore ticket helpers (per-user) with fallback ====== */
-function userTicketsRef(){
-  if(!currentUser) return null;
-  return db.collection('users').doc(currentUser.uid).collection('tickets');
-}
-async function getTickets(){
-  if(!currentUser) return [];
-  // try subcollection
-  try{
-    const snap = await userTicketsRef().orderBy('createdAt','desc').get();
-    if(snap.size) return snap.docs.map(d=>({ id:d.id, ...d.data() }));
-  }catch(e){
-    console.warn('read user subcollection error', e);
-  }
-  // fallback to root collection with filters
-  try{
-    // try userId field
-    const q1 = db.collection('tickets').where('userId','==', currentUser.uid).orderBy('createdAt','desc');
-    const s1 = await q1.get();
-    if(s1.size) return s1.docs.map(d=>({ id:d.id, ...d.data() }));
-    // try owner field
-    const q2 = db.collection('tickets').where('owner','==', currentUser.uid).orderBy('createdAt','desc');
-    const s2 = await q2.get();
-    if(s2.size) return s2.docs.map(d=>({ id:d.id, ...d.data() }));
-    // try matching by email
-    const allSnap = await db.collection('tickets').orderBy('createdAt','desc').get();
-    const all = allSnap.docs.map(d=>({ id:d.id, ...d.data() }));
-    const filtered = all.filter(t=>{
-      if(!t) return false;
-      if(t.userId && t.userId===currentUser.uid) return true;
-      if(t.owner && t.owner===currentUser.uid) return true;
-      if(t.email && currentUser.email && t.email.toLowerCase()===currentUser.email.toLowerCase()) return true;
-      return false;
-    });
-    if(filtered.length) return filtered;
-    return [];
-  }catch(e){
-    console.error('tickets fallback error', e);
-    return [];
-  }
-}
-async function addTicketToDB(t){
-  if(!currentUser) { openLogin();
- return; }
-  await userTicketsRef().add(t);
-}
-async function updateTicketInDB(updated){
-  if(!currentUser) return;
-  const { id, ...data } = updated;
-  // prefer subcollection path if exists
-  try{
-    await userTicketsRef().doc(id).update(data);
-    return;
-  }catch(e){
-    // fallback to root doc
-  }
-  try{ await db.collection('tickets').doc(id).update(data); }catch(e){ console.warn('update fallback failed', e); }
-}
-async function deleteTicketFromDB(id){
-  if(!currentUser) return;
-  try{ await userTicketsRef().doc(id).delete(); return; }catch(e){}
-  try{ await db.collection('tickets').doc(id).delete(); }catch(e){ console.warn('delete fallback failed', e); }
-}
+*/* logout */*
+*logoutBtn.onclick = async ()=>{*
+  *try{*
+    *await auth.signOut();*
+    *showToast('Выход выполнен');*
+  *}catch(e){ console.error(e); alert('Ошибка выхода: '+e.message); }*
+*};*
 
-/* ====== render / UI logic ====== */
-openRequest.onclick = ()=> {
-  if(!currentUser) return openLogin();
+*/* profile save */*
+*closeProfileBtn.onclick = ()=>hideModal(profileModal);*
+*saveProfileBtn.onclick = async ()=>{*
+  *if(!currentUser) return alert('Войдите чтобы сохранить профиль');*
+  *const name = profileName.value.trim() || 'Пользователь';*
+  *if(profileAvatar.files\[0\]){*
+    *const reader = new FileReader();*
+    *reader.onload = async ()=> {*
+      *const avatarData = reader.result;*
+      *await db.collection('users').doc(currentUser.uid).set({ name, avatar: avatarData }, { merge:true });*
+      *topName.textContent = name; greetName.textContent = name; avatarImg.src = avatarData;*
+      *hideModal(profileModal);*
+      *showToast('Профиль сохранён','success');*
+    *};*
+    *reader.readAsDataURL(profileAvatar.files\[0\]);*
+  *} else {*
+    *await db.collection('users').doc(currentUser.uid).set({ name }, { merge:true });*
+    *topName.textContent = name; greetName.textContent = name;*
+    *hideModal(profileModal);*
+    *showToast('Профиль сохранён','success');*
+  *}*
+*};*
 
-  showModal(requestModal);
-  document.getElementById('subject').focus();
-};
-requestCancel.onclick = ()=> hideModal(requestModal);
+*/* ====== Firestore ticket helpers (per-user) with fallback ====== */*
+*function userTicketsRef(){*
+  *if(!currentUser) return null;*
+  *return db.collection('users').doc(currentUser.uid).collection('tickets');*
+*}*
+*async function getTickets(){*
+  *if(!currentUser) return \[\];*
+  *// try subcollection*
+  *try{*
+    *const snap = await userTicketsRef().orderBy('createdAt','desc').get();*
+    *if(snap.size) return [snap.docs.map](http://snap.docs.map)(d=>({ id:[d.id](http://d.id), ...[d.data](http://d.data)() }));*
+  *}catch(e){*
+    *console.warn('read user subcollection error', e);*
+  *}*
+  *// fallback to root collection with filters*
+  *try{*
+    *// try userId field*
+    *const q1 = db.collection('tickets').where('userId','==', currentUser.uid).orderBy('createdAt','desc');*
+    *const s1 = await q1.get();*
+    *if(s1.size) return [s1.docs.map](http://s1.docs.map)(d=>({ id:[d.id](http://d.id), ...[d.data](http://d.data)() }));*
+    *// try owner field*
+    *const q2 = db.collection('tickets').where('owner','==', currentUser.uid).orderBy('createdAt','desc');*
+    *const s2 = await q2.get();*
+    *if(s2.size) return [s2.docs.map](http://s2.docs.map)(d=>({ id:[d.id](http://d.id), ...[d.data](http://d.data)() }));*
+    *// try matching by email*
+    *const allSnap = await db.collection('tickets').orderBy('createdAt','desc').get();*
+    *const all = [allSnap.docs.map](http://allSnap.docs.map)(d=>({ id:[d.id](http://d.id), ...[d.data](http://d.data)() }));*
+    *const filtered = all.filter(t=>{*
+      *if(!t) return false;*
+      *if(t.userId && t.userId===currentUser.uid) return true;*
+      *if(t.owner && t.owner===currentUser.uid) return true;*
+      *if([t.email](http://t.email) && [currentUser.email](http://currentUser.email) && [t.email](http://t.email).toLowerCase()===[currentUser.email](http://currentUser.email).toLowerCase()) return true;*
+      *return false;*
+    *});*
+    *if(filtered.length) return filtered;*
+    *return \[\];*
+  *}catch(e){*
+    *console.error('tickets fallback error', e);*
+    *return \[\];*
+  *}*
+*}*
+*async function addTicketToDB(t){*
+  *if(!currentUser) { openLogin();*
+ *return; }*
+  *await userTicketsRef().add(t);*
+*}*
+*async function updateTicketInDB(updated){*
+  *if(!currentUser) return;*
+  *const { id, ...data } = updated;*
+  *// prefer subcollection path if exists*
+  *try{*
+    *await userTicketsRef().doc(id).update(data);*
+    *return;*
+  *}catch(e){*
+    *// fallback to root doc*
+  *}*
+  *try{ await db.collection('tickets').doc(id).update(data); }catch(e){ console.warn('update fallback failed', e); }*
+*}*
+*async function deleteTicketFromDB(id){*
+  *if(!currentUser) return;*
+  *try{ await userTicketsRef().doc(id).delete(); return; }catch(e){}*
+  *try{ await db.collection('tickets').doc(id).delete(); }catch(e){ console.warn('delete fallback failed', e); }*
+*}*
 
-openMyTickets.onclick = ()=>{
-  if(!currentUser) return openAuthModal();
-  renderTickets();
-  showModal(ticketsModal);
-};
-closeTicketsBtn.onclick = ()=> hideModal(ticketsModal);
+*/* ====== render / UI logic ====== */*
+*openRequest.onclick = ()=> {*
+  *if(!currentUser) return openLogin();*
 
-openInstr.onclick = ()=> instrPanel.style.display = (instrPanel.style.display === 'none' || !instrPanel.style.display) ? 'block' : 'none';
+  *showModal(requestModal);*
+  *document.getElementById('subject').focus();*
+*};*
+*requestCancel.onclick = ()=> hideModal(requestModal);*
 
-async function renderTickets(filter){
-  ticketsContainer.innerHTML = '';
-  if(!currentUser){ ticketsContainer.innerHTML = '<div class="small">Войдите чтобы увидеть свои заявки</div>'; return; }
-  const arr = await getTickets();
-  const q = (filter||'').toLowerCase();
-  if(!arr.length){ ticketsContainer.innerHTML = '<div class="small">Заявок нет</div>'; return; }
-  arr.filter(t=> !q || (t.subject && t.subject.toLowerCase().includes(q)) || (t.id && t.id.toLowerCase().includes(q)) ).forEach(t=>{
-    const row=document.createElement('div'); row.className='ticket-row';
-    const left=document.createElement('div');
-    const title=document.createElement('div');
-    title.innerHTML = `<strong>#${t.id||t.id}</strong> — ${t.subject} <div class="small">${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}</div>`;
-    left.appendChild(title);
-    const actions=document.createElement('div'); actions.className='ticket-actions';
-    const openBtn=document.createElement('button'); openBtn.className='btn'; openBtn.textContent='Открыть'; openBtn.onclick=(ev)=>{ev.stopPropagation(); openTicket(t.id);};
-    const delBtn=document.createElement('button'); delBtn.className='btn secondary'; delBtn.textContent='Удалить'; delBtn.onclick=(ev)=>{ ev.stopPropagation(); if(confirm('Удалить заявку?')){ deleteTicketFromDB(t.id).then(()=>renderTickets()); } };
-    actions.appendChild(openBtn); actions.appendChild(delBtn);
-    row.appendChild(left); row.appendChild(actions);
-    row.onclick = ()=> openTicket(t.id);
-    ticketsContainer.appendChild(row);
-  });
-}
+*openMyTickets.onclick = ()=>{*
+  *if(!currentUser) return openAuthModal();*
+  *renderTickets();*
+  *showModal(ticketsModal);*
+*};*
+*closeTicketsBtn.onclick = ()=> hideModal(ticketsModal);*
 
-async function openTicket(id){
-  hideModal(ticketsModal);
-  const arr = await getTickets();
-  const t = arr.find(x=>x.id===id); if(!t) return;
-  currentTicketId = id;
-  ticketTitle.textContent = t.subject;
-  ticketIdEl.textContent = '#'+(t.id||id);
-  ticketMeta.textContent = `${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}`;
-  ticketDesc.textContent = t.desc || '';
+*openInstr.onclick = ()=> [instrPanel.style](http://instrPanel.style).display = ([instrPanel.style](http://instrPanel.style).display === 'none' || \![instrPanel.style](http://instrPanel.style).display) ? 'block' : 'none';*
 
-if (t.attachments && t.attachments.length) {
-  const wrap = document.createElement('div');
-  wrap.innerHTML = '<strong>Вложения:</strong>';
+*async function renderTickets(filter){*
+  *ticketsContainer.innerHTML = '';*
+  *if(!currentUser){ ticketsContainer.innerHTML = '<div class="small">Войдите чтобы увидеть свои заявки</div>'; return; }*
+  *const arr = await getTickets();*
+  *const q = (filter||'').toLowerCase();*
+  *if(!arr.length){ ticketsContainer.innerHTML = '<div class="small">Заявок нет</div>'; return; }*
+  *arr.filter(t=> !q || (t.subject && t.subject.toLowerCase().includes(q)) || ([t.id](http://t.id) && [t.id](http://t.id).toLowerCase().includes(q)) ).forEach(t=>{*
+    *const row=document.createElement('div'); row.className='ticket-row';*
+    *const left=document.createElement('div');*
+    *const title=document.createElement('div');*
+    *title.innerHTML = `<strong>#${`[`t.id`](http://t.id)`||`[`t.id`](http://t.id)`}</strong> — ${t.subject} <div class="small">${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}</div>`;*
+    *left.appendChild(title);*
+    *const actions=document.createElement('div'); actions.className='ticket-actions';*
+    *const openBtn=document.createElement('button'); openBtn.className='btn'; openBtn.textContent='Открыть'; openBtn.onclick=(ev)=>{ev.stopPropagation(); openTicket([t.id](http://t.id));};*
+    *const delBtn=document.createElement('button'); delBtn.className='btn secondary'; delBtn.textContent='Удалить'; delBtn.onclick=(ev)=>{ ev.stopPropagation(); if(confirm('Удалить заявку?')){ deleteTicketFromDB([t.id](http://t.id)).then(()=>renderTickets()); } };*
+    *actions.appendChild(openBtn); actions.appendChild(delBtn);*
+    *row.appendChild(left); row.appendChild(actions);*
+    *row.onclick = ()=> openTicket([t.id](http://t.id));*
+    *ticketsContainer.appendChild(row);*
+  *});*
+*}*
 
-  t.attachments.forEach(a => {
-    const link = document.createElement('a');
-    link.href = a.data;
-    link.download = a.name;
-    link.textContent = '📎 ' + a.name;
-    link.style.display = 'block';
-    link.style.marginTop = '6px';
-    wrap.appendChild(link);
-  });
+*async function openTicket(id){*
+  *hideModal(ticketsModal);*
+  *const arr = await getTickets();*
+  *const t = arr.find(x=>[x.id](http://x.id)===id); if(!t) return;*
+  *currentTicketId = id;*
+  *ticketTitle.textContent = t.subject;*
+  *ticketIdEl.textContent = '#'+([t.id](http://t.id)||id);*
+  *ticketMeta.textContent = `${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}`;*
+  *ticketDesc.textContent = t.desc || '';*
 
-  ticketDesc.appendChild(wrap);
-}
-  renderComments(t.comments || []);
-  newComment.value = '';
-  showModal(ticketModal);
-}
-function renderComments(comments){
-  ticketComments.innerHTML = '';
+*if (t.attachments && t.attachments.length) {*
+  *const wrap = document.createElement('div');*
+  *wrap.innerHTML = '<strong>Вложения:</strong>';*
 
-  if(!Array.isArray(comments) || !comments.length){
-    ticketComments.innerHTML = '<div class="small">Комментариев нет</div>';
-    return;
-  }
+  *t.attachments.forEach(a => {*
+    *if ([a.data](http://a.data) && [a.data](http://a.data).startsWith('data:image')) {*
+      *const img = document.createElement('img');*
+      *img.src = [a.data](http://a.data);*
+      [*img.style*](http://img.style)*.maxWidth = '220px';*
+      [*img.style*](http://img.style)*.borderRadius = '8px';*
+      [*img.style*](http://img.style)*.display = 'block';*
+      [*img.style*](http://img.style)*.marginTop = '8px';*
+      *wrap.appendChild(img);*
+    *} else {*
+      *const link = document.createElement('a');*
+      *link.href = [a.data](http://a.data);*
+      [*link.download*](http://link.download)* = [a.name](http://a.name);*
+      *link.textContent = '📎 ' + [a.name](http://a.name);*
+      [*link.style*](http://link.style)*.display = 'block';*
+      [*link.style*](http://link.style)*.marginTop = '6px';*
+      *wrap.appendChild(link);*
+    *}*
+  *});*
 
-  comments.forEach(c=>{
-    const isStaff = c.role === 'staff';
+  *ticketDesc.appendChild(wrap);*
+*}*
 
-    const staffBadge = isStaff
-      ? `<span style="color:#16a34a;font-weight:600;margin-left:6px">(Сотрудник поддержки)</span>`
-      : '';
+  *renderComments(t.comments || \[\]);*
+  *newComment.value = '';*
+  *showModal(ticketModal);*
+*}*
+*function renderComments(comments){*
+  *ticketComments.innerHTML = '';*
 
-    ticketComments.innerHTML += `
-      <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px">
-        <div class="small">
-          <b>${c.byName || 'Пользователь'}</b>${staffBadge}
-        </div>
-        <div style="margin-top:6px">${c.text}</div>
-      </div>
-    `;
-  });
-}
+  *if(!Array.isArray(comments) || !comments.length){*
+    *ticketComments.innerHTML = '<div class="small">Комментариев нет</div>';*
+    *return;*
+  *}*
 
-/* comments / cancel / delete */
-addCommentBtn.onclick = async ()=>{
-  const text = newComment.value.trim(); if(!text) return;
-  const arr = await getTickets(); const idx = arr.findIndex(x=>x.id===currentTicketId); if(idx===-1) return;
-  if(!Array.isArray(arr[idx].comments)) arr[idx].comments = [];
-  const c = { text, at: new Date().toISOString() };
-  arr[idx].comments.push(c);
-  await updateTicketInDB(arr[idx]);
-  renderComments(arr[idx].comments);
-  newComment.value = '';
-};
-cancelTicketBtn.onclick = async ()=>{
-  if(!confirm('Отменить заявку?')) return;
-  const arr = await getTickets(); const idx = arr.findIndex(x=>x.id===currentTicketId); if(idx===-1) return;
-  arr[idx].status = 'Отменена';
-  await updateTicketInDB(arr[idx]);
-  ticketMeta.textContent = `${arr[idx].priority} · ${arr[idx].status} · ${formatDate(arr[idx].createdAt)}`;
-  renderTickets();
-};
-deleteTicketBtn.onclick = async ()=>{
-  if(!confirm('Удалить заявку окончательно?')) return;
-  await deleteTicketFromDB(currentTicketId);
-  hideModal(ticketModal);
-  renderTickets();
-};
-closeTicketModal.onclick = ()=> hideModal(ticketModal);
+  *comments.forEach(c=>{*
+    *const isStaff = c.role === 'staff';*
 
-/* ====== Request form -> write to Firestore and keep mailto fallback ====== */
-requestForm.addEventListener('submit', async e=>{
-  e.preventDefault();
-  if(!currentUser){ openAuthModal(); return; }
-  const subject = document.getElementById('subject').value.trim();
-  const priority = document.getElementById('priority').value;
-  const desc = document.getElementById('desc').value.trim();
-  const fileInput = document.getElementById('attachmentInput');
-let attachments = [];
+    *const staffBadge = isStaff*
+      *? `<span style="color:#16a34a;font-weight:600;margin-left:6px">(Сотрудник поддержки)</span>`*
+      *: '';*
 
-if (fileInput.files[0]) {
-  const file = fileInput.files[0];
+    *const time = [c.at](http://c.at) ? formatDate([c.at](http://c.at)) : '';*
 
-  if (file.size > 800 * 1024) {
-    alert('Файл слишком большой (макс ~800 КБ)');
-    return;
-  }
+    *ticketComments.innerHTML += `      <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px">         <div class="small">           <b>${c.byName || 'Пользователь'}</b>${staffBadge}           <span style="margin-left:8px;color:#9b98a3">${time}</span>         </div>         <div style="margin-top:6px">${c.text}</div>       </div>    `;*
+  *});*
+*}*
 
-  const base64 = await new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
 
-  attachments.push({
-    name: file.name,
-    type: file.type,
-    data: base64
-  });
-}
-  const ticket = {
-  subject,
-  priority,
-  desc,
-  attachments,
-  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  status: 'Новая',
-  comments: []
-};
-  await addTicketToDB(ticket);
-  const createdAt = new Date().toISOString();
-  const body=[`Subject: ${subject}`,`Priority: ${priority}`,'',`Description:`,desc,'',`Date: ${createdAt}`].join('\n');
-  hideModal(requestModal);
-  requestForm.reset();
-  renderTickets();
-});
+*/* comments / cancel / delete */*
+*addCommentBtn.onclick = async ()=>{*
+  *const text = newComment.value.trim(); if(!text) return;*
+  *const arr = await getTickets(); const idx = arr.findIndex(x=>[x.id](http://x.id)===currentTicketId); if(idx===-1) return;*
+  *if(!Array.isArray(arr\[idx\].comments)) arr\[idx\].comments = \[\];*
+  *const c = { text, at: new Date().toISOString() };*
+  *arr\[idx\].comments.push(c);*
+  *await updateTicketInDB(arr\[idx\]);*
+  *renderComments(arr\[idx\].comments);*
+  *newComment.value = '';*
+*};*
+*cancelTicketBtn.onclick = async ()=>{*
+  *if(!confirm('Отменить заявку?')) return;*
+  *const arr = await getTickets(); const idx = arr.findIndex(x=>[x.id](http://x.id)===currentTicketId); if(idx===-1) return;*
+  *arr\[idx\].status = 'Отменена';*
+  *await updateTicketInDB(arr\[idx\]);*
+  *ticketMeta.textContent = `${arr[idx].priority} · ${arr[idx].status} · ${formatDate(arr[idx].createdAt)}`;*
+  *renderTickets();*
+*};*
+*deleteTicketBtn.onclick = async ()=>{*
+  *if(!confirm('Удалить заявку окончательно?')) return;*
+  *await deleteTicketFromDB(currentTicketId);*
+  *hideModal(ticketModal);*
+  *renderTickets();*
+*};*
+*closeTicketModal.onclick = ()=> hideModal(ticketModal);*
 
-/* ====== Payments: store per-user in users doc (payments array + expiry) ====== */
-function computeTotal(months){
-  const base = BASE_PRICE*months;
-  const disc = DISCOUNTS[months] || 0;
-  return { total: Math.round(base*(1-disc)), disc };
+*/* ====== Request form → write to Firestore and keep mailto fallback ====== */*
+*requestForm.addEventListener('submit', async e=>{*
+  *e.preventDefault();*
+  *if(!currentUser){ openAuthModal(); return; }*
+  *const subject = document.getElementById('subject').value.trim();*
+  *const priority = document.getElementById('priority').value;*
+  *const desc = document.getElementById('desc').value.trim();*
+  *const fileInput = document.getElementById('attachmentInput');*
+*let attachments = \[\];*
+
+*if (fileInput.files\[0\]) {*
+  *const file = fileInput.files\[0\];*
+
+  *if (file.size > 800 \* 1024) {*
+    *alert('Файл слишком большой (макс \~800 КБ)');*
+    *return;*
+  *}*
+
+  *const base64 = await new Promise(resolve => {*
+    *const reader = new FileReader();*
+    *reader.onload = () => resolve(reader.result);*
+    *reader.readAsDataURL(file);*
+  *});*
+
+  *attachments.push({*
+    *name: [file.name](http://file.name),*
+    *type: file.type,*
+    *data: base64*
+  *});*
+*}*
+  *const ticket = {*
+  *subject,*
+  *priority,*
+  *desc,*
+  *attachments,*
+  *createdAt: firebase.firestore.FieldValue.serverTimestamp(),*
+  *status: 'Новая',*
+  *comments: \[\]*
+*};*
+  *await addTicketToDB(ticket);*
+  *const createdAt = new Date().toISOString();*
+  *const body=\[`Subject: ${subject}`,`Priority: ${priority}`,'',`Description:`,desc,'',`Date: ${createdAt}`\].join('\\n');*
+  *hideModal(requestModal);*
+  *requestForm.reset();*
+  *renderTickets();*
+*});*
+
+*/* ====== Payments: store per-user in users doc (payments array + expiry) ====== */*
+*function computeTotal(months){*
+  *const base = BASE_PRICE*months;
+  const disc = DISCOUNTS\[months\] || 0;
+  return { total: Math.round(base\*(1-disc)), disc };
 }
 function formatDMY(date){ return String(date.getDate()).padStart(2,'0')+'.'+String(date.getMonth()+1).padStart(2,'0')+'.'+date.getFullYear(); }
 
 function updatePaymentUI(){
   const months = parseInt(periodSelect.value,10);
   const res = computeTotal(months);
-  totalAmount.textContent = res.total + ' ₽';
-  discountLabel.textContent = res.disc>0 ? 'Скидка: '+(res.disc*100)+'%' : '';
-  const d = new Date(); d.setMonth(d.getMonth()+months);
-  nextBilling.textContent = formatDMY(d);
-}
-periodSelect.addEventListener('change', updatePaymentUI);
-updatePaymentUI();
+  totalAmount.textContent = [res.total](http://res.total) + ' ₽';
+  discountLabel.textContent = res.disc>0 ? 'Скидка: '+(res.disc*100)+'%' : '';*
+  *const d = new Date(); d.setMonth(d.getMonth()+months);*
+  *nextBilling.textContent = formatDMY(d);*
+*}*
+*periodSelect.addEventListener('change', updatePaymentUI);*
+*updatePaymentUI();*
 
-payCardBtn.onclick = ()=> showInternalPayment('card');
-function showInternalPayment(method){
-  payCardBtn.style.display='none'; sberpayBtn.style.display='none'; sbpBtn.style.display='none';
-  cardForm.style.display='block';
-}
-cancelCardPayment.onclick = ()=> { cardForm.style.display='none'; payCardBtn.style.display='inline-flex'; sberpayBtn.style.display='inline-flex'; sbpBtn.style.display='inline-flex'; };
+*payCardBtn.onclick = ()=> showInternalPayment('card');*
+*function showInternalPayment(method){*
+  [*payCardBtn.style*](http://payCardBtn.style)*.display='none'; [sberpayBtn.style](http://sberpayBtn.style).display='none'; [sbpBtn.style](http://sbpBtn.style).display='none';*
+  [*cardForm.style*](http://cardForm.style)*.display='block';*
+*}*
+*cancelCardPayment.onclick = ()=> { [cardForm.style](http://cardForm.style).display='none'; [payCardBtn.style](http://payCardBtn.style).display='inline-flex'; [sberpayBtn.style](http://sberpayBtn.style).display='inline-flex'; [sbpBtn.style](http://sbpBtn.style).display='inline-flex'; };*
 
-async function recordPayment(months, method){
-  if(!currentUser) { openAuthModal(); return; }
-  const res = computeTotal(months);
-  const userRef = db.collection('users').doc(currentUser.uid);
-  const userDoc = await userRef.get();
-  const data = userDoc.exists ? userDoc.data() : {};
-  // determine previous expiry
- let prev = new Date();
+*async function recordPayment(months, method){*
+  *if(!currentUser) { openAuthModal(); return; }*
+  *const res = computeTotal(months);*
+  *const userRef = db.collection('users').doc(currentUser.uid);*
+  *const userDoc = await userRef.get();*
+  *const data = userDoc.exists ? [userDoc.data](http://userDoc.data)() : {};*
+  *// determine previous expiry*
+ *let prev = new Date();*
 
-if (data.expiry) {
-  if (typeof data.expiry === 'string') {
-    // формат ДД.ММ.ГГГГ
-    if (/^\d{2}\.\d{2}\.\d{4}$/.test(data.expiry)) {
-      const [dd, mm, yyyy] = data.expiry.split('.');
-      prev = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-    }
-    // формат YYYY-MM-DD
-    else if (/^\d{4}-\d{2}-\d{2}/.test(data.expiry)) {
-      prev = new Date(data.expiry);
-    }
-  } 
-  else if (data.expiry instanceof Date) {
-    prev = data.expiry;
-  }
-  else if (data.expiry && typeof data.expiry.toDate === 'function') {
-    prev = data.expiry.toDate();
-  }
-}
+*if (data.expiry) {*
+  *if (typeof data.expiry === 'string') {*
+    *// формат ДД.ММ.ГГГГ*
+    *if (/^\\d{2}.\\d{2}.\\d{4}$/.test(data.expiry)) {*
+      *const \[dd, mm, yyyy\] = data.expiry.split('.');*
+      *prev = new Date(Number(yyyy), Number(mm) - 1, Number(dd));*
+    *}*
+    *// формат YYYY-MM-DD*
+    *else if (/^\\d{4}-\\d{2}-\\d{2}/.test(data.expiry)) {*
+      *prev = new Date(data.expiry);*
+    *}*
+  *}* 
+  *else if (data.expiry instanceof Date) {*
+    *prev = data.expiry;*
+  *}*
+  *else if (data.expiry && typeof data.expiry.toDate === 'function') {*
+    *prev = data.expiry.toDate();*
+  *}*
+*}*
 
-// защита от Invalid Date
-if (isNaN(prev.getTime())) {
-  prev = new Date();
-}
-  const newExpiry = new Date(prev); newExpiry.setMonth(newExpiry.getMonth()+months);
-  const expiryStr = formatDMY(newExpiry);
-  const paymentRecord = { amount: res.total, method, months, at: new Date().toISOString() };
-  await userRef.set({
-    expiry: expiryStr,
-    payments: firebase.firestore.FieldValue.arrayUnion(paymentRecord)
-  }, { merge:true });
-  expiryDateEl.textContent = expiryStr;
-  showToast('Оплата проведена — спасибо!', 'success');
-  createConfetti();
-}
+*// защита от Invalid Date*
+*if (isNaN(prev.getTime())) {*
+  *prev = new Date();*
+*}*
+  *const newExpiry = new Date(prev); newExpiry.setMonth(newExpiry.getMonth()+months);*
+  *const expiryStr = formatDMY(newExpiry);*
+  *const paymentRecord = { amount: [res.total](http://res.total), method, months, at: new Date().toISOString() };*
+  *await userRef.set({*
+    *expiry: expiryStr,*
+    *payments: firebase.firestore.FieldValue.arrayUnion(paymentRecord)*
+  *}, { merge:true });*
+  *expiryDateEl.textContent = expiryStr;*
+  *showToast('Оплата проведена — спасибо!', 'success');*
+  *createConfetti();*
+*}*
 
-/* simulate payments — SberPay / SBP instantly confirm */
-sberpayBtn.onclick = async ()=>{
-  const months = parseInt(periodSelect.value,10);
-  await recordPayment(months, 'sberpay');
-  hideModal(paymentModal);
-};
-sbpBtn.onclick = async ()=>{
-  const months = parseInt(periodSelect.value,10);
-  await recordPayment(months, 'sbp');
-  hideModal(paymentModal);
-};
-cardPaymentForm.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const months = parseInt(periodSelect.value,10);
-  await recordPayment(months, 'card');
-  cardPaymentForm.reset();
-  cardForm.style.display='none';
-  payCardBtn.style.display='inline-flex'; sberpayBtn.style.display='inline-flex'; sbpBtn.style.display='inline-flex';
-  hideModal(paymentModal);
-});
+*/* simulate payments — SberPay / SBP instantly confirm */*
+*sberpayBtn.onclick = async ()=>{*
+  *const months = parseInt(periodSelect.value,10);*
+  *await recordPayment(months, 'sberpay');*
+  *hideModal(paymentModal);*
+*};*
+*sbpBtn.onclick = async ()=>{*
+  *const months = parseInt(periodSelect.value,10);*
+  *await recordPayment(months, 'sbp');*
+  *hideModal(paymentModal);*
+*};*
+*cardPaymentForm.addEventListener('submit', async (e)=>{*
+  *e.preventDefault();*
+  *const months = parseInt(periodSelect.value,10);*
+  *await recordPayment(months, 'card');*
+  *cardPaymentForm.reset();*
+  [*cardForm.style*](http://cardForm.style)*.display='none';*
+  [*payCardBtn.style*](http://payCardBtn.style)*.display='inline-flex'; [sberpayBtn.style](http://sberpayBtn.style).display='inline-flex'; [sbpBtn.style](http://sbpBtn.style).display='inline-flex';*
+  *hideModal(paymentModal);*
+*});*
 
-/* open payment modal */
-payBtn.onclick = ()=> {
-  if(!currentUser) return openAuthModal();
-  showModal(paymentModal);
-  updatePaymentUI();
-};
-closePaymentBtn.onclick = ()=> hideModal(paymentModal);
+*/* open payment modal */*
+*payBtn.onclick = ()=> {*
+  *if(!currentUser) return openAuthModal();*
+  *showModal(paymentModal);*
+  *updatePaymentUI();*
+*};*
+*closePaymentBtn.onclick = ()=> hideModal(paymentModal);*
 
-/* ticket search */
-ticketSearch.addEventListener('input', ()=> renderTickets(ticketSearch.value) );
+*/* ticket search */*
+*ticketSearch.addEventListener('input', ()=> renderTickets(ticketSearch.value) );*
 
-/* initial UI state */
+*/* initial UI state \*/
 (function init(){
   const savedExpiry = localStorage.getItem(STORAGE_KEYS.expiry);
   if(savedExpiry) expiryDateEl.textContent = savedExpiry;
   disableAppForGuest();
 })();
 </script>
+
 </body>
 </html>
