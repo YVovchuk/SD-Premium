@@ -109,6 +109,10 @@
     <div class="field"><label>Тема</label><input id="subject" required></div>
     <div class="field"><label>Приоритет</label><select id="priority"><option>Нормальный</option><option>Высокий</option><option>Критический</option></select></div>
     <div class="field"><label>Описание</label><textarea id="desc" required></textarea></div>
+    <div class="field">
+  <label>Вложение (до 1 МБ)</label>
+  <input type="file" id="attachmentInput">
+</div>
     <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn secondary" id="requestCancel">Отмена</button><button type="submit" class="btn">Отправить</button></div>
   </form>
 </div></div>
@@ -614,6 +618,23 @@ async function openTicket(id){
   ticketIdEl.textContent = '#'+(t.id||id);
   ticketMeta.textContent = `${t.priority || ''} · ${t.status || ''} · ${formatDate(t.createdAt)}`;
   ticketDesc.textContent = t.desc || '';
+
+if (t.attachments && t.attachments.length) {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = '<strong>Вложения:</strong>';
+
+  t.attachments.forEach(a => {
+    const link = document.createElement('a');
+    link.href = a.data;
+    link.download = a.name;
+    link.textContent = '📎 ' + a.name;
+    link.style.display = 'block';
+    link.style.marginTop = '6px';
+    wrap.appendChild(link);
+  });
+
+  ticketDesc.appendChild(wrap);
+}
   renderComments(t.comments || []);
   newComment.value = '';
   showModal(ticketModal);
@@ -663,12 +684,38 @@ requestForm.addEventListener('submit', async e=>{
   const subject = document.getElementById('subject').value.trim();
   const priority = document.getElementById('priority').value;
   const desc = document.getElementById('desc').value.trim();
+  const fileInput = document.getElementById('attachmentInput');
+let attachments = [];
+
+if (fileInput.files[0]) {
+  const file = fileInput.files[0];
+
+  if (file.size > 800 * 1024) {
+    alert('Файл слишком большой (макс ~800 КБ)');
+    return;
+  }
+
+  const base64 = await new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+
+  attachments.push({
+    name: file.name,
+    type: file.type,
+    data: base64
+  });
+}
   const ticket = {
-    subject, priority, desc,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    status: 'Новая',
-    comments: []
-  };
+  subject,
+  priority,
+  desc,
+  attachments,
+  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  status: 'Новая',
+  comments: []
+};
   await addTicketToDB(ticket);
   const createdAt = new Date().toISOString();
   const body=[`Subject: ${subject}`,`Priority: ${priority}`,'',`Description:`,desc,'',`Date: ${createdAt}`].join('\n');
