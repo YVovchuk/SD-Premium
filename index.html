@@ -173,18 +173,29 @@
   <div style="text-align:right;margin-top:14px"><button class="btn secondary" id="closePaymentBtn">Закрыть</button></div>
 </div></div>
 
-<!-- AUTH (login/register) modal -->
-<div class="modal-backdrop" id="authModal"><div class="modal" style="max-width:420px">
-  <h3 id="authTitle">Вход / регистрация</h3>
-  <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="username"></div>
-  <div class="field"><label>Пароль</label><input id="authPassword" type="password" autocomplete="current-password"></div>
+<!-- LOGIN MODAL -->
+<div class="modal-backdrop" id="loginModal"><div class="modal" style="max-width:420px">
+  <h3>Вход</h3>
+  <div class="field"><label>Email</label><input id="loginEmail" type="email"></div>
+  <div class="field"><label>Пароль</label><input id="loginPassword" type="password"></div>
   <div class="auth-actions">
-    <button class="btn" id="authSignInBtn">Войти</button>
-    <button class="btn secondary" id="authRegisterBtn">Регистрация</button>
-    <button class="link-btn" id="authCloseBtn">Закрыть</button>
+    <button class="btn" id="loginBtn">Войти</button>
+    <button class="link-btn" id="openRegisterBtn">Регистрация</button>
   </div>
-  <div style="margin-top:8px;color:var(--muted)" id="authHint"> </div>
 </div></div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-backdrop" id="registerModal"><div class="modal" style="max-width:420px">
+  <h3>Регистрация</h3>
+  <div class="field"><label>Имя</label><input id="registerName" required></div>
+  <div class="field"><label>Email</label><input id="registerEmail" type="email"></div>
+  <div class="field"><label>Пароль</label><input id="registerPassword" type="password"></div>
+  <div class="auth-actions">
+    <button class="btn" id="registerBtn">Создать аккаунт</button>
+    <button class="link-btn" id="openLoginBtn">У меня уже есть аккаунт</button>
+  </div>
+</div></div>
+
 
 <!-- toast + confetti -->
 <div class="toast-wrap" id="toastWrap"></div>
@@ -214,7 +225,7 @@ const ticketsModal = document.getElementById('ticketsModal');
 const ticketModal = document.getElementById('ticketModal');
 const profileModal = document.getElementById('profileModal');
 const paymentModal = document.getElementById('paymentModal');
-const authModal = document.getElementById('authModal');
+
 
 const avatarBtn = document.getElementById('avatarBtn');
 const avatarImg = document.getElementById('avatarImg');
@@ -264,11 +275,7 @@ const closePaymentBtn = document.getElementById('closePaymentBtn');
 const cancelCardPayment = document.getElementById('cancelCardPayment');
 const cardPaymentForm = document.getElementById('cardPaymentForm');
 
-const authEmail = document.getElementById('authEmail');
-const authPassword = document.getElementById('authPassword');
-const authSignInBtn = document.getElementById('authSignInBtn');
-const authRegisterBtn = document.getElementById('authRegisterBtn');
-const authCloseBtn = document.getElementById('authCloseBtn');
+
 const authTitle = document.getElementById('authTitle');
 
 const logoutBtn = document.getElementById('logoutBtn');
@@ -341,33 +348,77 @@ function openAuthModal(){
   showModal(authModal);
 }
 function closeAuthModal(){ hideModal(authModal); }
-authCloseBtn.onclick = closeAuthModal;
+const loginModal = document.getElementById('loginModal');
+const registerModal = document.getElementById('registerModal');
 
-authRegisterBtn.onclick = async ()=>{
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+
+const registerName = document.getElementById('registerName');
+const registerEmail = document.getElementById('registerEmail');
+const registerPassword = document.getElementById('registerPassword');
+const registerBtn = document.getElementById('registerBtn');
+
+const openRegisterBtn = document.getElementById('openRegisterBtn');
+const openLoginBtn = document.getElementById('openLoginBtn');
+
+function openLogin(){
+  showModal(loginModal);
+}
+function openRegister(){
+  showModal(registerModal);
+}
+
+openRegisterBtn.onclick = ()=>{
+  hideModal(loginModal);
+  openRegister();
+};
+
+openLoginBtn.onclick = ()=>{
+  hideModal(registerModal);
+  openLogin();
+};
+
+loginBtn.onclick = async ()=>{
   try{
-    const email = authEmail.value.trim();
-    const pass = authPassword.value;
+    const email = loginEmail.value.trim();
+    const pass = loginPassword.value;
     if(!email || !pass) return alert('Введите email и пароль');
+    await auth.signInWithEmailAndPassword(email, pass);
+    hideModal(loginModal);
+  }catch(err){
+    alert(err.message);
+  }
+};
+
+registerBtn.onclick = async ()=>{
+  try{
+    const name = registerName.value.trim();
+    const email = registerEmail.value.trim();
+    const pass = registerPassword.value;
+
+    if(!name) return alert('Введите имя');
+    if(!email || !pass) return alert('Введите email и пароль');
+
     const userCred = await auth.createUserWithEmailAndPassword(email, pass);
+
     await db.collection('users').doc(userCred.user.uid).set({
-      name: userCred.user.displayName || 'Пользователь',
+      name: name,
       avatar: null,
       expiry: null,
       payments: []
-    }, { merge:true });
-    closeAuthModal();
-  }catch(err){ alert(err.message); console.error(err); }
+    });
+
+    hideModal(registerModal);
+  }catch(err){
+    alert(err.message);
+  }
 };
 
-authSignInBtn.onclick = async ()=>{
-  try{
-    const email = authEmail.value.trim();
-    const pass = authPassword.value;
-    if(!email || !pass) return alert('Введите email и пароль');
-    await auth.signInWithEmailAndPassword(email, pass);
-    closeAuthModal();
-  }catch(err){ alert(err.message); console.error(err); }
-};
+
+
+
 
 /* ====== AUTH STATE ====== */
 auth.onAuthStateChanged(async user=>{
@@ -415,7 +466,7 @@ avatarBtn.onclick = ()=>{
     profileName.value = topName.textContent;
     showModal(profileModal);
   } else {
-    openAuthModal();
+    openLogin();
   }
 };
 
@@ -492,7 +543,8 @@ async function getTickets(){
   }
 }
 async function addTicketToDB(t){
-  if(!currentUser) { openAuthModal(); return; }
+  if(!currentUser) { openLogin();
+ return; }
   await userTicketsRef().add(t);
 }
 async function updateTicketInDB(updated){
@@ -515,7 +567,8 @@ async function deleteTicketFromDB(id){
 
 /* ====== render / UI logic ====== */
 openRequest.onclick = ()=> {
-  if(!currentUser) return openAuthModal();
+  if(!currentUser) return openLogin();
+
   showModal(requestModal);
   document.getElementById('subject').focus();
 };
