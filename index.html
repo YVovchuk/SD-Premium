@@ -441,7 +441,7 @@ auth.onAuthStateChanged(async user=>{
       topName.textContent = data.name || (user.email || 'Пользователь');
       greetName.textContent = data.name || (user.email || 'Пользователь');
       avatarImg.src = data.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-      accountStatus.textContent = 'Авторизован';
+      accountStatus.textContent = 'Сотрудник';
       accountPlanEl.textContent = data.plan || 'Премиум';
       expiryDateEl.textContent = data.expiry ? formatExpiry(data.expiry) : '—';
       enableAppForUser();
