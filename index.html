@@ -711,14 +711,32 @@ async function recordPayment(months, method){
   const userDoc = await userRef.get();
   const data = userDoc.exists ? userDoc.data() : {};
   // determine previous expiry
-  let prev = null;
-  if(data.expiry){
-    try{
-      if(typeof data.expiry === 'string' && /^\d{2}\.\d{2}\.\d{4}$/.test(data.expiry)){
-        const parts = data.expiry.split('.'); prev = new Date(parts[2], parts[1]-1, parts[0]);
-      } else { prev = new Date(data.expiry); }
-    }catch(e){ prev = new Date(); }
-  } else { prev = new Date(); }
+ let prev = new Date();
+
+if (data.expiry) {
+  if (typeof data.expiry === 'string') {
+    // формат ДД.ММ.ГГГГ
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(data.expiry)) {
+      const [dd, mm, yyyy] = data.expiry.split('.');
+      prev = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+    }
+    // формат YYYY-MM-DD
+    else if (/^\d{4}-\d{2}-\d{2}/.test(data.expiry)) {
+      prev = new Date(data.expiry);
+    }
+  } 
+  else if (data.expiry instanceof Date) {
+    prev = data.expiry;
+  }
+  else if (data.expiry && typeof data.expiry.toDate === 'function') {
+    prev = data.expiry.toDate();
+  }
+}
+
+// защита от Invalid Date
+if (isNaN(prev.getTime())) {
+  prev = new Date();
+}
   const newExpiry = new Date(prev); newExpiry.setMonth(newExpiry.getMonth()+months);
   const expiryStr = formatDMY(newExpiry);
   const paymentRecord = { amount: res.total, method, months, at: new Date().toISOString() };
